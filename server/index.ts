@@ -1,5 +1,6 @@
 import express, {Express, Request, Response} from 'express'
 import dotenv from 'dotenv'
+import dbConnect from './models/index'
 dotenv.config()
 
 const PORT = process.env.PORT || 8000 
@@ -11,4 +12,5 @@ app.get('/', (req: Request, res: Response)=>{
 
 app.listen(PORT, ()=>{
     console.log(PORT)
+    dbConnect()
 })
