@@ -36,3 +36,13 @@ This is typing test app! You can test your typing speed and plan to improve your
 ## Stretch Goals
 * Display Top scores across all users on a home page (ranking top 10 WPM)
 * Implement Socket.io to allow users to race against each other in typing tests
+
+
+## Project Timeline
+* 02/10 - set up Express server, Mongoose Schemas, React client side with Typescript.
+* 02/11 - start stubbing out backend routes to perform all needed actions.
+* 02/12 - Read up and refresh on user Auth to work on logging in from client side
+* 02/13 - Start on React components for typing test on client side
+* 02-14 - Finish any unfinished logic from the previous day, and get started on logic to suggest tests based on errors from tests
+* 02/15 - Finish any unfinished logic from the previous day, get started on stretch goals or styling
+* 02/16 - Finish polishing up anything needed and deploy
