@@ -1,9 +1,9 @@
-// const mongoose = require('mongoose')
 import mongoose from "mongoose";
 // const dotenv = require('dotenv')
 import dotenv from 'dotenv';
 dotenv.config();
 export function dbConnect() {
+    console.log('innn');
     const dbName = 'typingTestApp';
     const uri = 'mongodb://127.0.0.1/' + dbName;
     // .connect(uri)
@@ -17,7 +17,8 @@ export function dbConnect() {
     mongoose.connect(uri);
     const db = mongoose.connection;
     db.once('open', () => console.log(`mongodb has connected at ${db.host}:${db.port}`));
-    db.on('error', () => console.error());
+    db.on('error', (error) => console.log(error.message));
+    // module.exports = {User: User}
     return db;
 }
 // module.exports = {dbConnect}
