@@ -78,4 +78,24 @@ router.post('/register', async(req:Request,res:Response)=>{
         res.status(500).json({message: 'My Bad'})
     }
 })
+
+router.post('/login', async(req,res)=>{
+    try{
+        const foundUser = await User.findOne({ email: req.body.email })
+        if(!foundUser) return res.status(404).json({message: 'Login failed'})
+        const passwordLogin = await compareSync(req.body.password, foundUser.password)
+        if(!passwordLogin) return res.status(400).json({message: 'Login failed'})
+
+        const jwtPayload: {name: string, email: string, id: string} = {
+            name: foundUser.name,
+            email: foundUser.email,
+            id: foundUser.id,
+        }
+        const secret = process.env.JWT_SECRET 
+        const token = await jwt.sign(jwtPayload,secret)
+        res.json({token})
+    }catch(err){
+        res.status(500).json({message: "My Bad"})
+    }
+})
 export default router
