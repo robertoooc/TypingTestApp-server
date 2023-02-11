@@ -1,7 +1,9 @@
-import e from 'express'
+
 import mongoose, {model, Schema, Model, Document} from 'mongoose'
 // import Double from 'mongoose'
 // require('@mongoosejs/double')
+
+
 
 interface IMistakes extends Document{
     char: string,
@@ -41,4 +43,5 @@ const UserSchema: Schema = new Schema({
 })
 
 // module.exports = mongoose.model('User', User)
-export default mongoose.model<IUser>('User',UserSchema)
+ export default mongoose.model<IUser>('User',UserSchema)
+///module.exports = mongoose.model('User', UserSchema)

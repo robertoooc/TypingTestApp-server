@@ -1,37 +1,28 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 // import db = require('./models/index')
-const User_1 = __importDefault(require("./models/User"));
-function test() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // let user={
-            //     name: 'test',
-            //     email: 'test@test',
-            //     password: 'test'
-            // }
-            const newUser = yield User_1.default.create({
-                name: 'test',
-                email: 'test@test',
-                password: 'test'
-            });
-            console.table(newUser);
-        }
-        catch (err) {
-            console.log(err);
-        }
-    });
+// const dbConnect = require('./models/index.ts') 
+// dbConnect()
+// const User = require('./models/User')
+// import User from './models/User'
+// const User = require('./models/User')
+import { dbConnect } from './models/index.js'
+dbConnect()
+import User from './models/User.js';
+async function test() {
+    try {
+        // let user={
+        //     name: 'test',
+        //     email: 'test@test',
+        //     password: 'test'
+        // }
+        const newUser = await User.create({
+            name: 'test',
+            email: 'teddst@test',
+            password: 'test'
+        });
+        console.log(newUser);
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 test();
