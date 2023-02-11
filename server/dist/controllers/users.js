@@ -6,10 +6,15 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const findUser = await User.findById(req.body.id);
-        res.json(findUser);
+        if (findUser) {
+            res.status(200).json(findUser);
+        }
+        else {
+            res.status(404).json({ message: " User not found " });
+        }
     }
     catch (err) {
-        res.json(err);
+        res.status(500).json({ message: 'My bad' });
     }
 });
 export default router;
