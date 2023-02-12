@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import user from './controllers/users.js'
 import test from './controllers/tests.js'
 import User from './models/User.js'
+import cors from 'cors'
 dotenv.config()
 dbConnect()
 declare var process : {
@@ -18,7 +19,7 @@ declare var process : {
 const PORT = process.env.PORT || 8000 
 const app: Express = express()
 app.use(express.json())
-
+app.use(cors())
 app.get('/', (req: Request, res: Response)=>{
     res.send('home')
 })

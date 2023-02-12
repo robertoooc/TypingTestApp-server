@@ -2,22 +2,34 @@ import { useState,FC } from "react";
 import axios from "axios";
 import jwt_decode from 'jwt-decode'
 import { useNavigate, NavigateFunction } from "react-router-dom";
-const Register:FC = ()=>{
+interface currentUser{
+    name?: string;
+    email?: string;
+    id?: string;
+    iat?: number
+}
+interface Props {
+    currentUser: currentUser|null;
+    setCurrentUser: (val:currentUser)=>void;
+ }
+const Register:FC<Props> = ({currentUser,setCurrentUser})=>{
 	const [name, setName] = useState<string>('')
 	const [email, setEmail] = useState<string>('')
 	const [password, setPassword] = useState<string>('')
 	const [message, setMessage] = useState<string>('')
     const navigate: NavigateFunction = useNavigate()
 
-    const handleSubmit = async(e:Event)=>{
+    const handleSubmit = async(e:any)=>{
         e.preventDefault()
+        // preventDefault()
+        console.log('he')
         try{
             const reqBody = {
                 name, 
                 email,
                 password
             }
-            const submit = await axios.post('http:localhost:8000/users/register', reqBody)
+            const submit = await axios.post('http://localhost:8000/users/register', reqBody)
 
             const {token} = submit.data
             localStorage.setItem('jwt',token)
@@ -28,10 +40,11 @@ const Register:FC = ()=>{
             if (err.response) setMessage(err.response.data.message)
         }
     }
+    console.log(currentUser)
     // currentUser ? navigate('/') : null
     return(
         <div>
-            <form onSubmit={e=>handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="name">Name: </label>
                 <input
                     autoComplete='off'
@@ -62,3 +75,4 @@ const Register:FC = ()=>{
         </div>
     )
 }
+export default Register
