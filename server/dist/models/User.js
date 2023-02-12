@@ -4,15 +4,15 @@ const Mistakes = new Schema({
     amount: { type: Number }
 });
 const Tests = new Schema({
-    wpm: { type: Number, default: 0 },
+    wpm: { type: Number },
     mistakes: [Mistakes]
 });
 const UserSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    average: { type: Number, default: 0 },
-    best: { type: Number, default: 0 },
+    average: { type: Number },
+    best: { type: Number },
     tests: [Tests]
 });
 // module.exports = mongoose.model('User', User)

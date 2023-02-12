@@ -19,7 +19,7 @@ interface ITests extends Document{
     mistakes: Array<object>
 }
 const Tests: Schema= new Schema({
-    wpm: { type: Number, default: 0 },
+    wpm: { type: Number},
     mistakes: [Mistakes]
 })
 
@@ -37,8 +37,8 @@ const UserSchema: Schema = new Schema({
     name:{ type: String, required: true},
     email: { type: String, required: true, unique: true},
     password: { type: String, required: true},
-    average: { type: Number, default: 0 }, // will come back and try to convert to Float
-    best: { type: Number, default: 0 },
+    average: { type: Number}, // will come back and try to convert to Float
+    best: { type: Number},
     tests: [Tests]
 })
 
