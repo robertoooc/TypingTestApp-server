@@ -1,24 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {FC, useState, useEffect} from 'react';
+import jwt_decode from 'jwt-decode'
+import {Router,Routes,Route} from 'react-router-dom'
+const App:FC=()=> {
+  const [currentUser,setCurrentUser]= useState<string|null>(null)
 
-function App() {
+  useEffect(()=>{
+    const token:string|null = localStorage.getItem('jwt')
+    token ? setCurrentUser(jwt_decode(token)): setCurrentUser(null)
+  },[])
+
+  const logOut = () =>{
+    setCurrentUser!= null ? localStorage.removeItem('jwt') : null
+    setCurrentUser(null)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+
     </div>
   );
 }
