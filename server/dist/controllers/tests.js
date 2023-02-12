@@ -1,11 +1,13 @@
 import express from 'express';
 import User from '../models/User.js';
 import { dbConnect } from '../models/index.js';
+import { middleware } from './middleware.js';
 dbConnect();
 const router = express.Router();
-router.post('/', async (req, res) => {
+router.post('/', middleware, async (req, res) => {
     try {
-        console.log(req.body);
+        if (!res.locals.user)
+            throw new Error('User not logged in');
         const findUser = await User.findById(req.body.id);
         if (!findUser)
             return res.status(404).json({ message: 'User not found' });
@@ -15,30 +17,23 @@ router.post('/', async (req, res) => {
             wpm,
             mistakes
         };
-        console.log(payload, 'hererere🛑🛑');
         findUser.tests.push(payload);
-        console.log(findUser);
         await findUser.save();
-        console.log(findUser);
         res.json({ findUser });
         // {
-        //  "id": "userId",
-        //  "payload": {
-        //      test:{
-        //          wpm: number,
-        //          mistakes: [
-        //              {
-        //              char: 'character',
-        //              amount: number
-        //              },
-        //              {
-        //              char: 'character',
-        //              amount: number
-        //              }
-        //          ]
-        //      }
-        //   }
-        // }
+        //     "id": "63e8229205216e93bca9ab65",
+        //      "wpm": 30,
+        //      "mistakes":[
+        //        {
+        //          "char": "t",
+        //          "amount": 5
+        //        },
+        //        {
+        //          "char":"e",
+        //          "amount": 7
+        //        }
+        //        ]
+        //    }
     }
     catch (err) {
         console.log(err);
