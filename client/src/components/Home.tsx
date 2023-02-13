@@ -97,7 +97,7 @@ const Home:FC<Props>=({currentUser})=>{
     const [mistakes,setMistakes]=useState<Array<string>|null>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [double, setDouble] = useState<Boolean>(false)
-
+    const [load,setLoad] = useState<Boolean>(false)
     useEffect(()=>{
         const pingWords=async()=>{
             try{
@@ -113,42 +113,59 @@ const Home:FC<Props>=({currentUser})=>{
             }
         }
         pingWords()
+        setLoad(true)
     },[])
 
     useEffect(()=>{
-        // console.log(double, 'hehe')
-        document.addEventListener('keydown',(e)=>{
-            // if(e.key == userKey) console.log('maybe')
-            setUserKey(e.key)
-        })
-    },[])
-
-    useEffect(()=>{
-        console.log(userKey)
-        if(words[index]=== userKey){
-            if(words[index+1]===words[index]){
-                setDouble(true)
-                // console.log('double')
-            }
-            // console.log('true')
-            let newIndex = index +1
-            setIndex(newIndex)
-        }else{
-            // console.log('noooo')
+        if(load){
+                document.addEventListener('keydown',(e)=>{
+                    setUserKey(e.key)
+                })
+                document.addEventListener('keyup',()=>{
+                    setUserKey(null)
+                } )
         }
-    },[userKey])
+        },[load])
+
     useEffect(()=>{
-    if(double){
-        document.addEventListener('keydown',(e)=>{
-            if (e.key == words[index]){
-                console.log(e.key)
+        if(userKey!=null){
+            console.log(userKey)
+            if(words[index]=== userKey){
+                if(words[index+1]===words[index]){
+                    setLoad(false)
+                    setLoad(true)
+                }
                 let newIndex = index +1
                 setIndex(newIndex)
-                setDouble(false) 
+            }else{
+                console.log(`wrong, ${userKey} supposed to be ${words[index]}`)
             }
-        })
-    }
-    },[double])
+        }
+    },[userKey])
+    // useEffect(()=>{
+    //     if(double){
+    //         console.log('in hte loop')
+    //         document.addEventListener('keydown',(e)=>{
+    //         if(e.key == words[index]){
+    //             console.log(e.key)
+    //             let newIndex = index +1
+    //             setIndex(newIndex)
+    //             setDouble(false) 
+    //             return 
+    //         }else{
+    //             console.log(`wrong, : ${e.key} shouldve been ${words[index]}`)
+    //             setDouble(false) 
+    //             setUserKey(e.key)
+    //         console.log('exit loop')
+    //         return 
+    //         }
+    //     })
+    //     document.addEventListener('keyup',()=>{
+    //         console.log('leave')
+    //         return 
+    //     })
+    // }
+    // },[double==true])
     return(
         <>
 
