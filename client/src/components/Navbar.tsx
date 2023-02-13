@@ -20,8 +20,8 @@ const NavBar:FC<Props>=({currentUser,setCurrentUser}) =>{
 
     const loggedIn = (
         <nav>
-            <Link to='/'>Home</Link>
-            <Link to='/'>Profile</Link>
+            <Link to='/'>Home</Link><br></br>
+            <Link to='/'>Profile</Link><br></br>
             {/* <div onClick={handleLogout}> */}
             <div onClick={handleLogout}>
                 Logout
@@ -31,10 +31,10 @@ const NavBar:FC<Props>=({currentUser,setCurrentUser}) =>{
 
     const loggedOut = (
         <nav>
-            <Link to='/'>Home</Link>
+            <Link to='/'>Home</Link><br></br>
             {/* <Link to='/login'>Login</Link> */}
-            <Link to='/register'>Register</Link>
-            <Link to='/login'>Login</Link>
+            <Link to='/register'>Register</Link><br></br>
+            <Link to='/login'>Login</Link><br></br>
         </nav>
     )
 
