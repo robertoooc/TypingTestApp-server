@@ -94,7 +94,7 @@ const Home:FC<Props>=({currentUser})=>{
     const [words,setWords]=useState<string>('')
     const [index,setIndex]=useState<number>(0)
     const [currentChar, setCurrentChar]=useState<string|null>('')
-    const [mistakes,setMistakes]=useState<Array<string>|null>([])
+    const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [double, setDouble] = useState<Boolean>(false)
     const [load,setLoad] = useState<Boolean>(false)
@@ -138,7 +138,10 @@ const Home:FC<Props>=({currentUser})=>{
                 let newIndex = index +1
                 setIndex(newIndex)
             }else{
-                console.log(`wrong, ${userKey} supposed to be ${words[index]}`)
+                if(userKey.length > 0){
+                    console.log(`wrong, ${userKey} supposed to be ${words[index]}`)
+                    setMistakes([...mistakes, userKey])
+                }
             }
         }
     },[userKey])
