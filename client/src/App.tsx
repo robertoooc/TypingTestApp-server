@@ -4,6 +4,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import NavBar from './components/Navbar';
 import Login from './components/Login';
 import Register from './components/Register';
+import Home from './components/Home';
 const App:FC=()=> {
   interface user {
   name?: string;
@@ -26,20 +27,27 @@ const App:FC=()=> {
 
   return (
     <BrowserRouter>
-    {/* <header>
+    <header>
       <NavBar
-        // currentUser= {currentUser}
+         currentUser= {currentUser}
+         setCurrentUser={setCurrentUser}
       />
-    </header> */}
+    </header>
     {/* <Login/> */}
-    <Register
-    currentUser={currentUser} setCurrentUser={setCurrentUser}
-    />
 
 
-      {/* <Routes>
-        <Route path='/'/>
-      </Routes> */}
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route 
+        path='/register' 
+        element={
+          <Register 
+            currentUser={currentUser} 
+            setCurrentUser={setCurrentUser}
+          />
+        }/>
+
+      </Routes>
     </BrowserRouter>
   );
 }

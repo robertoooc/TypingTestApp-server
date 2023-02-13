@@ -40,8 +40,8 @@ const Register:FC<Props> = ({currentUser,setCurrentUser})=>{
             if (err.response) setMessage(err.response.data.message)
         }
     }
-    console.log(currentUser)
-    // currentUser ? navigate('/') : null
+    //console.log(currentUser)
+    //if(currentUser.email.length > 0) navigate('/')
     return(
         <div>
             <form onSubmit={handleSubmit}>
