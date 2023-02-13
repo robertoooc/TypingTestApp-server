@@ -169,12 +169,24 @@ const Home:FC<Props>=({currentUser})=>{
     //     })
     // }
     // },[double==true])
+
+    const typedText = words.substring(0,index)
+    const untypedText = words.substring(index, words.length-1)
     return(
         <>
 
         Home
-        <br></br>
-        {words}
+
+        <div>
+            <br></br>
+            <span style={{color: "grey"}}>
+            {typedText}
+            </span>
+            <span>
+            {untypedText}
+            </span>
+        </div>
+
         </>
     )
 }
