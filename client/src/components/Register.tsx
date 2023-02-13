@@ -21,8 +21,6 @@ const Register:FC<Props> = ({currentUser,setCurrentUser})=>{
 
     const handleSubmit = async(e:any)=>{
         e.preventDefault()
-        // preventDefault()
-        console.log('he')
         try{
             const reqBody = {
                 name, 
@@ -33,15 +31,15 @@ const Register:FC<Props> = ({currentUser,setCurrentUser})=>{
 
             const {token} = submit.data
             localStorage.setItem('jwt',token)
-            const decoded = jwt_decode(token)
-            // setCurrentUser(decoded)
+            const decoded = jwt_decode<currentUser>(token)
+            console.log(decoded,'🐥')
+            setCurrentUser(decoded)
+            navigate('/')
         }catch(err:any){
             console.log(err)
             if (err.response) setMessage(err.response.data.message)
         }
     }
-    //console.log(currentUser)
-    //if(currentUser.email.length > 0) navigate('/')
     return(
         <div>
             <form onSubmit={handleSubmit}>

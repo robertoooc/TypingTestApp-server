@@ -37,7 +37,8 @@ const App:FC=()=> {
 
 
       <Routes>
-        <Route path='/' element={<Home/>}/>
+        <Route path='/' element={<Home 
+        currentUser={currentUser}/>}/>
         <Route 
         path='/register' 
         element={
