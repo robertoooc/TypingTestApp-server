@@ -12,7 +12,6 @@ declare var process : {
     env : {
         JWT_SECRET: string,
         PORT: number
-
     }
 }  
 

@@ -11,13 +11,16 @@ interface Props {
  }
 const Home:FC<Props>=({currentUser})=>{
     const [words,setWords]=useState([])
+    const [wordsTyped,setWordsTyped]=useState([])
     const [commonMistake,setCommonMistake]=useState<string|null>('')
     useEffect(()=>{
         const pingWords=async()=>{
             try{
                 const response = await axios.get(`https://api.datamuse.com/words?sp=a*`)
-                console.log(response.data)
-                
+                const listWords = response.data.map((word:{word: string, score:number})=>{
+                    return `${word.word} `
+                })
+                setWords(listWords)
             }catch(err){
                 console.log(err)
             }
@@ -28,6 +31,8 @@ const Home:FC<Props>=({currentUser})=>{
         <>
 
         Home
+        <br></br>
+        {words}
         </>
     )
 }
