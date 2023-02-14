@@ -1,7 +1,7 @@
 import { FC,useEffect, useState } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import axios from "axios";
-import { off } from "process";
+
 interface currentUser{
     name?: string;
     email?: string;
@@ -12,8 +12,21 @@ interface Props {
     currentUser: currentUser|null;
  }
 const Profile:FC<Props> = ({currentUser})=>{
+    interface mistakes{
+        char: string;
+        amount: number;
+        _id: string
+    }
+    interface userData{
+        wpm: number;
+        mistakes: [mistakes];
+        _id: string;
+    }
+
     const [oldPassword,setOldPassword] = useState<string>('')
     const [newPassword,setNewPassword] = useState<string>('')
+    const [seeSettings,setSeeSettings] = useState<Boolean>(false)
+    const [userData, setUserData] = useState<Array<userData>>()
     const navigate:NavigateFunction = useNavigate()
 
     const deleteAccount = async()=>{
@@ -62,7 +75,11 @@ const Profile:FC<Props> = ({currentUser})=>{
                           'Authorization': `${token}`
                         }
                 })
-                console.log(pingBackend.data)
+                console.log(pingBackend.data.tests)
+                setUserData(pingBackend.data.tests)
+                // const userInfo = pingBackend.data.tests.map((test:any)=>{
+                    
+                // })
             }catch(err){
                 console.log(err)
             }
@@ -70,7 +87,7 @@ const Profile:FC<Props> = ({currentUser})=>{
         getUserTests()
     },[])
 
-    return(
+    const edit =(
         <>
         <form onSubmit={handleSubmit}>
         <label htmlFor="oldPassword">Old Password: </label>
@@ -94,6 +111,42 @@ const Profile:FC<Props> = ({currentUser})=>{
             <button type="submit">Submit</button>
             </form>
             <button onClick={deleteAccount}>Delete Account</button>
+            <button onClick={()=>setSeeSettings(false)} >Close</button>
+            </>
+    )
+
+
+    console.log(userData)
+    const viewData = userData?.map((test)=>{
+        let mistakeMessage
+        if (test.mistakes.length > 0){
+            let mistake = test.mistakes.reduce((prev,current)=>{
+                return (prev.amount > current.amount) ? prev :current
+            })
+            mistakeMessage= (
+                <>
+                <p>most common Mistake : {mistake.char}</p>
+                <p>Mistake Amount :  {mistake.amount}</p>
+                </>
+                )
+        }else{
+            mistakeMessage = (
+                <>
+                <p>Wow no Mistakes</p>
+                </>
+                )
+        }
+        return(
+            <div key={`${test._id}`} style={{border:'1px solid black',marginTop:'3px', padding: '10px'}}>
+            <p>WPM: {test.wpm}</p>
+            {mistakeMessage}
+            </div >
+        )
+    })
+    return(
+        <>
+        {seeSettings? edit:<button onClick={()=>setSeeSettings(true)}>Settings</button>}
+        {viewData}
         </>
     )
 }
