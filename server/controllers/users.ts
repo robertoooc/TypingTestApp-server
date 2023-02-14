@@ -2,6 +2,7 @@ import express, {Express, Request, Response} from 'express'
 import User from '../models/User.js'
 import { dbConnect } from '../models/index.js'
 import { genSaltSync, hashSync, compareSync } from 'bcrypt-ts'
+import { middleware } from './middleware.js'
 import jwt from 'jsonwebtoken'
 dbConnect()
 const router = express.Router()
@@ -11,9 +12,10 @@ declare var process : {
     }
 }   
 
-router.get('/', async(req: Request,res: Response)=>{
+router.get('/',middleware,async(req: Request,res: Response)=>{
     try{
-        const findUser = await User.findById(req.body.id)
+        const findUser = await User.findById(res.locals.user._id)
+        console.log(findUser)
         if (findUser){
             return res.status(200).json(findUser)
         }
@@ -35,13 +37,41 @@ router.get('/', async(req: Request,res: Response)=>{
 //     }
 // })
 
-router.delete('/', async (req:Request, res: Response)=>{
+router.delete('/',middleware, async (req:Request, res: Response)=>{
     try{
-        const deleteUser = await User.findOneAndDelete({_id: req.body.id})
+        const deleteUser = await User.findOneAndDelete({_id: res.locals.user._id})
         if(!deleteUser){
             return res.status(404).json({message:'User not found'})
         }
         return res.status(200).json({message: 'user deleted', deleteUser})
+    }catch(err){
+        res.status(500).json({message:'My bad'})
+    }
+})
+
+router.put('/', middleware, async(req:Request, res:Response)=>{
+    try{
+        const findUser = await User.findById(res.locals.user._id)
+        if(!findUser) return res.status(404).json({message:"User not FOunnd"})
+        const comparePassword = await compareSync(req.body.oldPassword, findUser.password)
+        if(!comparePassword) return res.status(400).json({message:'Wrong password'})
+        const newPassword:string = req.body.newPassword
+        const saltRounds:number = 12
+        const salt = genSaltSync(saltRounds)
+        const hashedPassword = hashSync(newPassword, salt)
+        findUser.update({
+            password: hashedPassword
+        })
+        findUser.save()
+        console.log(findUser)
+        const jwtPayload: {name: string, email: string, id: string} = {
+            name: findUser.name,
+            email: findUser.email,
+            id: findUser.id,
+        }
+        const secret = process.env.JWT_SECRET 
+        const token = await jwt.sign(jwtPayload,secret)
+        res.json({token})
     }catch(err){
         res.status(500).json({message:'My bad'})
     }

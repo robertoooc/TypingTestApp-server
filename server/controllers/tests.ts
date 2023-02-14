@@ -2,8 +2,7 @@ import express, {Express, Request, Response} from 'express'
 import User from '../models/User.js'
 import { dbConnect } from '../models/index.js'
 import { middleware } from './middleware.js'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { StringExpressionOperatorReturningBoolean } from 'mongoose'
+import jwt from 'jsonwebtoken'
 dbConnect()
 const router = express.Router()
 declare var process : {

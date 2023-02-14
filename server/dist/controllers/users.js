@@ -2,12 +2,14 @@ import express from 'express';
 import User from '../models/User.js';
 import { dbConnect } from '../models/index.js';
 import { genSaltSync, hashSync, compareSync } from 'bcrypt-ts';
+import { middleware } from './middleware.js';
 import jwt from 'jsonwebtoken';
 dbConnect();
 const router = express.Router();
-router.get('/', async (req, res) => {
+router.get('/', middleware, async (req, res) => {
     try {
-        const findUser = await User.findById(req.body.id);
+        const findUser = await User.findById(res.locals.user._id);
+        console.log(findUser);
         if (findUser) {
             return res.status(200).json(findUser);
         }

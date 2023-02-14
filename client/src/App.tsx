@@ -5,6 +5,7 @@ import NavBar from './components/Navbar';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
+import Profile from './components/Profile';
 const App:FC=()=> {
   interface user {
   name?: string;
@@ -55,6 +56,14 @@ const App:FC=()=> {
             <Login
             currentUser= {currentUser}
             setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          path='/profile'
+          element={
+            <Profile
+              currentUser={currentUser}
             />
           }
         />

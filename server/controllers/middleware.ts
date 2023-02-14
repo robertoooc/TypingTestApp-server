@@ -11,11 +11,17 @@ declare var process : {
 
 export const middleware = async(req:Request, res: Response, next:NextFunction)=>{
     try{
-        console.log(req.headers.authorization, '🛑🛑')
         const authHeader = req.headers.authorization
         if (!authHeader) throw new Error('JWT token is missing')
-        const decode = await jwt.verify(authHeader,process.env.JWT_SECRET)
-        const foundUser = await User.findById(decode)
+        interface JWTPayload{
+            name: string;
+            email: string;
+            id:string;
+            iat: number
+        }
+
+        const decode = await <JWTPayload>jwt.verify(authHeader,process.env.JWT_SECRET)
+        const foundUser = await User.findOne({_id:decode.id})
         res.locals.user = foundUser
         console.log(foundUser)
         next()
