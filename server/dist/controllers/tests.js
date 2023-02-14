@@ -1,25 +1,32 @@
 import express from 'express';
 import User from '../models/User.js';
 import { dbConnect } from '../models/index.js';
-import { middleware } from './middleware.js';
+import jwt from 'jsonwebtoken';
 dbConnect();
 const router = express.Router();
-router.post('/', middleware, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        if (!res.locals.user)
-            throw new Error('User not logged in');
-        const findUser = await User.findById(req.body.id);
-        if (!findUser)
-            return res.status(404).json({ message: 'User not found' });
+        console.log(req.headers.authorization, '🛑🛑');
+        const authHeader = req.headers.authorization;
+        if (!authHeader)
+            throw new Error('JWT token is missing');
+        const decode = await jwt.verify(authHeader, process.env.JWT_SECRET);
+        let id = decode.id;
+        console.log(decode, '🐙');
+        const foundUser = await User.findOne({ _id: id });
+        if (!foundUser)
+            throw new Error('User not found');
+        res.locals.user = foundUser;
         const wpm = req.body.wpm;
         const mistakes = req.body.mistakes;
         const payload = {
             wpm,
             mistakes
         };
-        findUser.tests.push(payload);
-        await findUser.save();
-        res.json({ findUser });
+        foundUser.tests.push(payload);
+        await foundUser.save();
+        console.log(foundUser);
+        res.json({ foundUser });
         // {
         //     "id": "63e8229205216e93bca9ab65",
         //      "wpm": 30,
@@ -36,7 +43,7 @@ router.post('/', middleware, async (req, res) => {
         //    }
     }
     catch (err) {
-        console.log(err);
+        console.log(err.message);
     }
 });
 export default router;

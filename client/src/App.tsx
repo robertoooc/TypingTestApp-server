@@ -9,14 +9,14 @@ const App:FC=()=> {
   interface user {
   name?: string;
   email?: string;
-  id?: string;
+  _id?: string;
   iat?: number
   }
   let [currentUser,setCurrentUser]= useState<user|null>(null)
-
+  const [token, setToken] = useState<string|null>(null)
   useEffect(()=>{
     const token:string|null = localStorage.getItem('jwt')
-    
+    setToken(token)
     token ? setCurrentUser(jwt_decode(token)): setCurrentUser(null)
   },[])
 
@@ -38,7 +38,9 @@ const App:FC=()=> {
 
       <Routes>
         <Route path='/' element={<Home 
-        currentUser={currentUser}/>}/>
+        currentUser={currentUser}
+        token = {token}
+        />}/>
         <Route 
         path='/register' 
         element={

@@ -5,7 +5,7 @@ import { useNavigate, NavigateFunction } from "react-router-dom";
 interface currentUser{
     name?: string;
     email?: string;
-    id?: string;
+    _id?: string;
     iat?: number
 }
 interface Props {

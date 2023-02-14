@@ -3,13 +3,14 @@ import axios from 'axios'
 interface currentUser{
     name?: string;
     email?: string;
-    id?: string;
+    _id?: string;
     iat?: number
 }
 interface Props {
     currentUser: currentUser|null;
+    token: string|null
  }
-const Home:FC<Props>=({currentUser})=>{
+const Home:FC<Props>=({currentUser,token})=>{
     const [words,setWords]=useState<string>('')
     const [index,setIndex]=useState<number>(0)
     const [mistakes,setMistakes]=useState<string[]>([])
@@ -17,6 +18,39 @@ const Home:FC<Props>=({currentUser})=>{
     const [load,setLoad] = useState<Boolean>(false)
     const [time, setTime] = useState<number>(0)
     const [started,setStarted] = useState<Boolean>(false)
+
+    const handleSubmit=async(mistakes:string[])=>{
+        try{
+            let count:any = {}
+            const condensedMistakes = mistakes.forEach((idx)=>{
+                count[idx] = (count[idx]||0)+1
+            })
+            let container = []
+            for(const [key,value] of Object.entries(count)){
+                let newEntry={
+                    char:key,
+                    amount:value
+                }
+                container.push(newEntry)
+            }
+            const payload={
+                id: currentUser?._id,
+                wpm: 10,
+                mistakes: container
+            }
+            let token = localStorage.getItem('jwt')
+            const sendData = await axios.post('http://localhost:8000/tests',payload,{
+                headers: {
+                  'Authorization': `${token}`
+                }
+            })
+            console.log(token)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
     useEffect(()=>{
         const pingWords=async()=>{
             try{
@@ -89,7 +123,8 @@ useEffect(()=>{
             {time}
             <br></br>
             <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
-                {started == false? <p>click on me to start</p>:null}
+                {started == false? <p>click on me to start</p>:<button onClick={()=>handleSubmit(mistakes)}>Submit</button>}
+                <br></br>
             <span style={{color: "grey"}}>
             {typedText}
             </span>

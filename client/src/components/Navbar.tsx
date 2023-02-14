@@ -3,7 +3,7 @@ import { FC } from "react";
 interface currentUser{
     name?: string;
     email?: string;
-    id?: string;
+    _id?: string;
     iat?: number
 }
 interface Props {
