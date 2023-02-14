@@ -2,7 +2,8 @@ import express, {Express, Request, Response} from 'express'
 import User from '../models/User.js'
 import { dbConnect } from '../models/index.js'
 import { middleware } from './middleware.js'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { StringExpressionOperatorReturningBoolean } from 'mongoose'
 dbConnect()
 const router = express.Router()
 declare var process : {
@@ -12,13 +13,16 @@ declare var process : {
 } 
 router.post('/', async(req:Request, res: Response)=>{
     try{
-        console.log(req.headers.authorization, '🛑🛑')
         const authHeader = req.headers.authorization
         if (!authHeader) throw new Error('JWT token is missing')
-        const decode = await jwt.verify(authHeader,process.env.JWT_SECRET)
-        let id = decode.id
-        console.log(decode, '🐙')
-        const foundUser = await User.findOne({_id:id})
+        interface JWTPayload{
+            name: string;
+            email: string;
+            id:string;
+            iat: number
+        }
+        const decode = await <JWTPayload>jwt.verify(authHeader,process.env.JWT_SECRET)
+        const foundUser = await User.findOne({_id:decode.id})
         if(!foundUser) throw new Error('User not found')
         res.locals.user = foundUser
         const wpm = req.body.wpm

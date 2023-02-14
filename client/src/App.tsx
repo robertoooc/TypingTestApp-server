@@ -49,6 +49,15 @@ const App:FC=()=> {
             setCurrentUser={setCurrentUser}
           />
         }/>
+        <Route
+          path='/login'
+          element={
+            <Login
+            currentUser= {currentUser}
+            setCurrentUser={setCurrentUser}
+            />
+          }
+        />
 
       </Routes>
     </BrowserRouter>

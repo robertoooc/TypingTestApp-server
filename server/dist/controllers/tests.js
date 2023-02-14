@@ -6,14 +6,11 @@ dbConnect();
 const router = express.Router();
 router.post('/', async (req, res) => {
     try {
-        console.log(req.headers.authorization, '🛑🛑');
         const authHeader = req.headers.authorization;
         if (!authHeader)
             throw new Error('JWT token is missing');
         const decode = await jwt.verify(authHeader, process.env.JWT_SECRET);
-        let id = decode.id;
-        console.log(decode, '🐙');
-        const foundUser = await User.findOne({ _id: id });
+        const foundUser = await User.findOne({ _id: decode.id });
         if (!foundUser)
             throw new Error('User not found');
         res.locals.user = foundUser;

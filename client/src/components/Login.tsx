@@ -2,14 +2,24 @@ import {FC, useState, useEffect} from 'react';
 import jwt_decode from 'jwt-decode'
 import {Router,Routes,Route, useNavigate, NavigateFunction} from 'react-router-dom'
 import axios, {AxiosResponse} from 'axios'
-
- const Login:FC=()=>{
-    const [email,setEmail] = useState<string>(' ')
-    const [password,setPassword] = useState<string>(' ')
-    const [message,setMessage]= useState<string>(' ')
+interface currentUser{
+    name?: string;
+    email?: string;
+    _id?: string;
+    iat?: number
+}
+interface Props {
+    currentUser: currentUser|null;
+    setCurrentUser: (val:currentUser)=>void;
+ }
+ const Login:FC<Props>=({currentUser,setCurrentUser})=>{
+    const [email,setEmail] = useState<string>('')
+    const [password,setPassword] = useState<string>('')
+    const [message,setMessage]= useState<string>('')
     let navigate:NavigateFunction = useNavigate()
 
-    const handleSubmit = async (e:Event)=>{
+    const handleSubmit = async (e:any)=>{
+
         e.preventDefault()
         try{
 
@@ -17,12 +27,13 @@ import axios, {AxiosResponse} from 'axios'
                 email, 
                 password
             }
-            const submit: AxiosResponse<string, object>
-            = await axios.post('http:localhost:8000/users/login', reqBody)
-            
-            localStorage.setItem('jwt', submit.data)
-            const decoded = jwt_decode(submit.data)
-            // setCurrentUser(decoded)
+            const submit
+            = await axios.post('http://localhost:8000/users/login', reqBody)      
+            const {token} = submit.data
+            localStorage.setItem('jwt',token)
+            const decoded = jwt_decode<currentUser>(token)
+            setCurrentUser(decoded)
+            navigate('/')
         }catch(err:any){
             console.log(err)
             if(err.response){
@@ -30,10 +41,16 @@ import axios, {AxiosResponse} from 'axios'
             }
         }
     }
-    // currentUser? navigate('/'): null
+    useEffect(()=>{
+        if(localStorage.getItem('jwt')){
+            navigate('/')
+        }
+    },[])
+
     return(
         <div>
-            <form onSubmit={e=>handleSubmit}>
+            {message}
+            <form onSubmit={handleSubmit}>
                 <label htmlFor='email'>Email: </label>
                 <input
                     autoComplete='off'  
