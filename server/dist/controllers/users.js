@@ -30,13 +30,43 @@ router.get('/', middleware, async (req, res) => {
 //         res.status(500).json({message: 'My bad'})
 //     }
 // })
-router.delete('/', async (req, res) => {
+router.delete('/', middleware, async (req, res) => {
     try {
-        const deleteUser = await User.findOneAndDelete({ _id: req.body.id });
+        const deleteUser = await User.findOneAndDelete({ _id: res.locals.user._id });
         if (!deleteUser) {
             return res.status(404).json({ message: 'User not found' });
         }
         return res.status(200).json({ message: 'user deleted', deleteUser });
+    }
+    catch (err) {
+        res.status(500).json({ message: 'My bad' });
+    }
+});
+router.put('/', middleware, async (req, res) => {
+    try {
+        console.log(res.locals.user, 'success');
+        const findUser = await User.findById(res.locals.user._id);
+        if (!findUser)
+            return res.status(404).json({ message: "User not FOunnd" });
+        const comparePassword = await compareSync(req.body.oldPassword, findUser.password);
+        if (!comparePassword)
+            return res.status(400).json({ message: 'Wrong password' });
+        const newPassword = req.body.newPassword;
+        const saltRounds = 12;
+        const salt = genSaltSync(saltRounds);
+        const hashedPassword = hashSync(newPassword, salt);
+        const updatedUser = await User.findByIdAndUpdate(findUser.id, { password: hashedPassword });
+        if (!updatedUser)
+            return res.status(500).json({ message: 'My bad' });
+        console.log(updatedUser, 'updated User 🧽');
+        const jwtPayload = {
+            name: updatedUser.name,
+            email: updatedUser.email,
+            id: updatedUser.id,
+        };
+        const secret = process.env.JWT_SECRET;
+        const token = await jwt.sign(jwtPayload, secret);
+        res.json({ token });
     }
     catch (err) {
         res.status(500).json({ message: 'My bad' });
