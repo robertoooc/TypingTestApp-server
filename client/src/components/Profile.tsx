@@ -16,6 +16,23 @@ const Profile:FC<Props> = ({currentUser})=>{
     const [newPassword,setNewPassword] = useState<string>('')
     const navigate:NavigateFunction = useNavigate()
 
+    const deleteAccount = async()=>{
+        try{
+            const token = localStorage.getItem('jwt')
+            const changePassword = await axios.delete('http://localhost:8000/users',{   
+                headers: {
+                  'Authorization': `${token}`
+                }
+        })
+        if(changePassword.data.message == 'user deleted'){
+            localStorage.removeItem('jwt')
+            navigate('/')
+        }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     const handleSubmit=async()=>{
         try{
             const token = localStorage.getItem('jwt')
@@ -76,6 +93,7 @@ const Profile:FC<Props> = ({currentUser})=>{
             />
             <button type="submit">Submit</button>
             </form>
+            <button onClick={deleteAccount}>Delete Account</button>
         </>
     )
 }
