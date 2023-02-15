@@ -1,5 +1,6 @@
 import { FC ,useState, useEffect } from "react";
 import axios from 'axios'
+
 interface currentUser{
     name?: string;
     email?: string;
@@ -16,13 +17,13 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [load,setLoad] = useState<Boolean>(false)
-    const [time, setTime] = useState<number>(0)
+    const [time, setTime] = useState<number>(60)
     const [started,setStarted] = useState<Boolean>(false)
-
+    const [stop, setStop] = useState<boolean>(false)
     const handleSubmit=async(mistakes:string[])=>{
         try{
             let count:any = {}
-            const condensedMistakes = mistakes.forEach((idx)=>{
+            mistakes.forEach((idx)=>{
                 count[idx] = (count[idx]||0)+1
             })
             let container = []
@@ -69,7 +70,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     },[])
 
     useEffect(()=>{
-        if(load&& started){
+        if(load&& started){ 
                 document.addEventListener('keydown',(e)=>{
                     setUserKey(e.key)
                 })
@@ -99,19 +100,37 @@ const Home:FC<Props>=({currentUser,token})=>{
         }
     },[userKey])
 
-useEffect(()=>{
-    if(started){
-        setInterval(()=>{
-            if(time == 60){
-                setTime(-1)
-            }else{
-                let newTime: number = time +1
-                setTime(newTime)
-            }
-        },1000)
-    }
-},[started,time])
 
+    useEffect(()=>{
+        const seconds = setInterval(()=>{
+            if(time==0) return time
+            setTime((prev)=>prev-1)
+        },1000)
+        return ()=>{
+            clearInterval(seconds)
+        }
+    },[time])
+// useEffect(()=>{
+//     if(started){
+//         setInterval(()=>{
+//             if(time == 0){
+//                 clearInterval(time)
+//             }else{
+//                 let newTime: number = time -1
+//                 setTime(newTime)
+//             }
+//         },1000)
+//     }
+// },[started,time])
+
+    // if(started){
+    //     (()=>{
+    //         setInterval(()=>{
+    //             let newTime = time -1
+    //             setTime(newTime)
+    //         },1000)
+    //     })()
+    // }
     const typedText = words.substring(0,index)
     const untypedText = words.substring(index, words.length-1)
     return(
@@ -120,7 +139,9 @@ useEffect(()=>{
         Home
 
         <div>
-            {time}
+
+        {/* {started && (stop!= true)? <Timer time={time} setTime={()=>setTime} /> : null} */}
+        {time}
             <br></br>
             <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
                 {started == false? <p>click on me to start</p>:<button onClick={()=>handleSubmit(mistakes)}>Submit</button>}
