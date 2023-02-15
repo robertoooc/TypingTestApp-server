@@ -88,7 +88,8 @@ router.post('/register', async (req, res) => {
         const newUser = await User.create({
             name: req.body.name,
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            wpm: 0
         });
         const jwtPayload = {
             name: newUser.name,

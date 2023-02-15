@@ -37,8 +37,7 @@ const UserSchema: Schema = new Schema({
     name:{ type: String, required: true},
     email: { type: String, required: true, unique: true},
     password: { type: String, required: true},
-    average: { type: Number}, // will come back and try to convert to Float
-    best: { type: Number},
+    wpm: { type: Number}, // will come back and try to convert to Float
     tests: [Tests]
 })
 

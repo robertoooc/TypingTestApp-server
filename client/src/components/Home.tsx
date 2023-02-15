@@ -176,27 +176,20 @@ const Home:FC<Props>=({currentUser,token})=>{
         }
     },[time,started])
 
-    // let results 
-    // if(seeResults){
-    //     results=(
-    //         <>
-    //         </>
-    //     )
-    // }
     let display
     if(seeResults){
         let innerDisplay = results.mistakes.map((mistake:{char:string, amount:number})=>{
 
             return(
-                <p key={`${mistake.char}`}>character: {mistake.char}, amount: {mistake.amount}</p>
+                <p key={`${mistake.char}`} style={{display:'inline-block',padding:'10px'}}>character: {mistake.char}, amount: {mistake.amount}</p>
             )
         })
         display = (
-            <>
+            <span style={{textAlign:'center'}}>
             <p>WPM: {results.wpm}</p>
             <p>Mistakes you made: </p>
                 {innerDisplay}
-            </>
+            </span>
         )
     }else{
         display=null

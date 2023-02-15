@@ -11,8 +11,7 @@ const UserSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    average: { type: Number },
-    best: { type: Number },
+    wpm: { type: Number },
     tests: [Tests]
 });
 // module.exports = mongoose.model('User', User)

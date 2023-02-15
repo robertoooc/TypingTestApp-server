@@ -12,6 +12,7 @@ declare var process : {
 } 
 router.post('/', async(req:Request, res: Response)=>{
     try{
+        // let updateWPM: boolean = false
         const authHeader = req.headers.authorization
         if (!authHeader) throw new Error('JWT token is missing')
         interface JWTPayload{
@@ -21,10 +22,10 @@ router.post('/', async(req:Request, res: Response)=>{
             iat: number
         }
         const decode = await <JWTPayload>jwt.verify(authHeader,process.env.JWT_SECRET)
-        const foundUser = await User.findOne({_id:decode.id})
+        const foundUser = await User.findById(decode.id)
         if(!foundUser) throw new Error('User not found')
         res.locals.user = foundUser
-        const wpm = req.body.wpm
+        const wpm:number = req.body.wpm
         const mistakes = req.body.mistakes
         const payload={
             wpm,
@@ -32,8 +33,16 @@ router.post('/', async(req:Request, res: Response)=>{
         }
         foundUser.tests.push(payload)
         await foundUser.save()
-        console.log(foundUser)
-        res.json({foundUser})
+        if (res.locals.user.wpm < wpm){
+           const updateWPM= await User.findByIdAndUpdate(res.locals.user.id,{wpm: wpm})
+           console.log(updateWPM)
+        // await foundUser.update()
+        // foundUser.wpm = wpm
+            res.json({updateWPM})
+        }else{
+            console.log(foundUser)
+            res.json({foundUser})
+        }
         // {
         //     "id": "63e8229205216e93bca9ab65",
         //      "wpm": 30,
