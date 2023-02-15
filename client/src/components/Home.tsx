@@ -12,17 +12,41 @@ interface Props {
     token: string|null
  }
 const Home:FC<Props>=({currentUser,token})=>{
+    interface results {
+        wpm: number;
+        char: string;
+        amount: number;
+    }
     const [words,setWords]=useState<string>('')
     const [index,setIndex]=useState<number>(0)
     const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [load,setLoad] = useState<Boolean>(false)
-    const [time, setTime] = useState<number>(5)
+    const [time, setTime] = useState<number>(60)
     const [started,setStarted] = useState<Boolean>(false)
     const [stop, setStop] = useState<boolean>(false)
+    const [seeResults,setSeeResults]=useState<boolean>(false)
+    const [results,setResults]=useState<results>()
     const handleSubmit=async(mistakes:string[])=>{
-        console.log('here')
         try{
+            let findWPM:number
+            // let accuracy:number
+            // if (index==0){
+            //     findWPM=0
+            //     accuracy=0
+            // } else{
+            //     findWPM = words.substring(0,index).split(' ').length
+            //     if(mistakes.length == 0){
+            //         accuracy =100
+            //     }else{
+            //         accuracy = Math.round(((index+mistakes.length)/index)*100)
+            //     }
+            // }
+            // console.log(findWPM, accuracy)
+
+            index==0?  findWPM = 0: findWPM = words.substring(0,index).split(' ').length
+            
+            // index==0 ? accuracy=0: accuracy = index/mistakes.length
             let count:any = {}
             mistakes.forEach((idx)=>{
                 count[idx] = (count[idx]||0)+1
@@ -35,17 +59,23 @@ const Home:FC<Props>=({currentUser,token})=>{
                 }
                 container.push(newEntry)
             }
+            console.log(container)
+            // setResults({
+            //     wpm: findWPM,
+            //     char: container.char,
+            //     amount:container.amount
+            // })
             let token = localStorage.getItem('jwt')
             if(!token){
                 //count everthing up display result 
-
+                
             }
             //else carry on with user
             if(!token) throw new Error('User not logged in')
             console.log('success?')
             const payload={
                 id: currentUser?._id,
-                wpm: 10,
+                wpm: findWPM,
                 mistakes: container
             }
             const sendData = await axios.post('http://localhost:8000/tests',payload,{
@@ -54,6 +84,7 @@ const Home:FC<Props>=({currentUser,token})=>{
                 }
             })
             console.log(token)
+
             return 'got it'
         }catch(err){
             console.log(typeof(err))
@@ -113,21 +144,30 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     useEffect(()=>{
         if(started){
-            const seconds = setInterval(()=>{
-                if(time==0){
-                    const check = handleSubmit(mistakes)
-                    console.log(check)
-
-                    clearInterval(seconds)
-                     return time 
+                const seconds = setInterval(()=>{
+                    if(time==0){
+                        const check = handleSubmit(mistakes)
+                        console.log(check)
+                        
+                        clearInterval(seconds)
+                        return time 
                 } 
                 setTime((prev)=>prev-1)
             },1000)
             return ()=>{
                 clearInterval(seconds)
             }
+
         }
     },[time,started])
+
+    // let results 
+    // if(seeResults){
+    //     results=(
+    //         <>
+    //         </>
+    //     )
+    // }
 
     const typedText = words.substring(0,index)
     const untypedText = words.substring(index, words.length-1)
