@@ -17,10 +17,11 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [load,setLoad] = useState<Boolean>(false)
-    const [time, setTime] = useState<number>(60)
+    const [time, setTime] = useState<number>(5)
     const [started,setStarted] = useState<Boolean>(false)
     const [stop, setStop] = useState<boolean>(false)
     const handleSubmit=async(mistakes:string[])=>{
+        console.log('here')
         try{
             let count:any = {}
             mistakes.forEach((idx)=>{
@@ -34,20 +35,29 @@ const Home:FC<Props>=({currentUser,token})=>{
                 }
                 container.push(newEntry)
             }
+            let token = localStorage.getItem('jwt')
+            if(!token){
+                //count everthing up display result 
+
+            }
+            //else carry on with user
+            if(!token) throw new Error('User not logged in')
+            console.log('success?')
             const payload={
                 id: currentUser?._id,
                 wpm: 10,
                 mistakes: container
             }
-            let token = localStorage.getItem('jwt')
             const sendData = await axios.post('http://localhost:8000/tests',payload,{
                 headers: {
                   'Authorization': `${token}`
                 }
             })
             console.log(token)
+            return 'got it'
         }catch(err){
-            console.log(err)
+            console.log(typeof(err))
+            return false
         }
     }
 
@@ -82,7 +92,7 @@ const Home:FC<Props>=({currentUser,token})=>{
 
 
     useEffect(()=>{
-        if(userKey!=null){
+        if((userKey!=null)&&started){
             console.log(userKey)
             if(words[index]=== userKey){
                 if(words[index+1]===words[index]){
@@ -98,39 +108,27 @@ const Home:FC<Props>=({currentUser,token})=>{
                 }
             }
         }
-    },[userKey])
+    },[userKey,started])
 
 
     useEffect(()=>{
-        const seconds = setInterval(()=>{
-            if(time==0) return time
-            setTime((prev)=>prev-1)
-        },1000)
-        return ()=>{
-            clearInterval(seconds)
-        }
-    },[time])
-// useEffect(()=>{
-//     if(started){
-//         setInterval(()=>{
-//             if(time == 0){
-//                 clearInterval(time)
-//             }else{
-//                 let newTime: number = time -1
-//                 setTime(newTime)
-//             }
-//         },1000)
-//     }
-// },[started,time])
+        if(started){
+            const seconds = setInterval(()=>{
+                if(time==0){
+                    const check = handleSubmit(mistakes)
+                    console.log(check)
 
-    // if(started){
-    //     (()=>{
-    //         setInterval(()=>{
-    //             let newTime = time -1
-    //             setTime(newTime)
-    //         },1000)
-    //     })()
-    // }
+                    clearInterval(seconds)
+                     return time 
+                } 
+                setTime((prev)=>prev-1)
+            },1000)
+            return ()=>{
+                clearInterval(seconds)
+            }
+        }
+    },[time,started])
+
     const typedText = words.substring(0,index)
     const untypedText = words.substring(index, words.length-1)
     return(
@@ -140,11 +138,11 @@ const Home:FC<Props>=({currentUser,token})=>{
 
         <div>
 
-        {/* {started && (stop!= true)? <Timer time={time} setTime={()=>setTime} /> : null} */}
         {time}
             <br></br>
             <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
-                {started == false? <p>click on me to start</p>:<button onClick={()=>handleSubmit(mistakes)}>Submit</button>}
+                {started == false? <p>click on me to start</p>:null}
+                {/* {started == false? <p>click on me to start</p>:<button onClick={()=>handleSubmit(mistakes)}>Submit</button>} */}
                 <br></br>
             <span style={{color: "grey"}}>
             {typedText}
