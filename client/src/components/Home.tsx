@@ -1,6 +1,6 @@
 import { FC ,useState, useEffect } from "react";
 import axios from 'axios'
-import { displayPartsToString } from "typescript";
+import { useNavigate,NavigateFunction, useParams } from "react-router-dom";
 
 interface currentUser{
     name?: string;
@@ -26,32 +26,25 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [load,setLoad] = useState<Boolean>(false)
-    const [time, setTime] = useState<number>(60)
+    const [time, setTime] = useState<number>(5)
     const [started,setStarted] = useState<Boolean>(false)
-    const [stop, setStop] = useState<boolean>(false)
+    const [newTest, setNewTest] = useState<boolean>(false)
     const [seeResults,setSeeResults]=useState<boolean>(false)
+    const [suggestionUrl,setSuggestionUrl]=useState<string>('')
+    let navigate:NavigateFunction = useNavigate()
     let [results,setResults]=useState<any>()
-    const [key,setKey]=useState<number>(0)
+    let {id} = useParams()
+
+    const handleNewTest =()=>{
+        navigate(suggestionUrl) 
+        // window.location.reload()
+        navigate(0)
+    }
+
     const handleSubmit=async(mistakes:string[])=>{
         try{
             let findWPM:number
-            // let accuracy:number
-            // if (index==0){
-            //     findWPM=0
-            //     accuracy=0
-            // } else{
-            //     findWPM = words.substring(0,index).split(' ').length
-            //     if(mistakes.length == 0){
-            //         accuracy =100
-            //     }else{
-            //         accuracy = Math.round(((index+mistakes.length)/index)*100)
-            //     }
-            // }
-            // console.log(findWPM, accuracy)
-
             index==0?  findWPM = 0: findWPM = words.substring(0,index).split(' ').length
-            
-            // index==0 ? accuracy=0: accuracy = index/mistakes.length
             let count:any={}
             mistakes.forEach((idx)=>{
                 count[idx] = (count[idx]||0)+1
@@ -67,11 +60,6 @@ const Home:FC<Props>=({currentUser,token})=>{
                 container.push(newEntry)
             }
             console.log(container)
-            // setResults({
-            //     wpm: findWPM,
-            //     char: container.char,
-            //     amount:container.amount
-            // })
             let token = localStorage.getItem('jwt')
             const structureResults = {
                 wpm: findWPM,
@@ -100,6 +88,20 @@ const Home:FC<Props>=({currentUser,token})=>{
             })
             console.log(token)
 
+            if(container.length==0){
+                setNewTest(true)
+                const alphabet ="abcdefghijklmnopqrstuvwxyz"
+                const randomSuggestion = alphabet[Math.floor(Math.random()*26)]
+                setSuggestionUrl(`/test/${randomSuggestion}`)
+            }else{
+                const suggestion = container.reduce((prev,current)=>{
+                    return (prev.amount > current.amount) ? prev : current
+                })
+                setNewTest(true)
+                setSuggestionUrl(`/test/${suggestion.char}`)
+            }
+            // sugestion.char will be chosen
+            // /home/:sugestion.char
             return 'got it'
         }catch(err){
             console.log(typeof(err))
@@ -111,7 +113,15 @@ const Home:FC<Props>=({currentUser,token})=>{
     useEffect(()=>{
         const pingWords=async()=>{
             try{
-                const response = await axios.get(`https://api.datamuse.com/words?sp=a*`)
+                // console.log(id?.length)
+                if(id?.length == undefined){
+                    id = 'a'
+                }else{
+                    if(id.length > 1){
+                        id = id[0]
+                    }
+                }
+                const response = await axios.get(`https://api.datamuse.com/words?sp=${id}*`)
                 const listWords = response.data.map((word:{word: string, score:number})=>{
                     return `${word.word}`
                 })
@@ -205,6 +215,7 @@ const Home:FC<Props>=({currentUser,token})=>{
         <div>
 
         {time}
+            {newTest ? <button onClick={handleNewTest}>New Test</button> :null}
             <br></br>
             <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
                 {started == false? <p>click on me to start</p>:null}
