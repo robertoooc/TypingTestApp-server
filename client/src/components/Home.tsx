@@ -1,5 +1,6 @@
 import { FC ,useState, useEffect } from "react";
 import axios from 'axios'
+import { displayPartsToString } from "typescript";
 
 interface currentUser{
     name?: string;
@@ -12,10 +13,13 @@ interface Props {
     token: string|null
  }
 const Home:FC<Props>=({currentUser,token})=>{
+    interface mistakes{
+            char:string;
+            amount:number; 
+    }
     interface results {
         wpm: number;
-        char: string;
-        amount: number;
+        mistakes: [mistakes]
     }
     const [words,setWords]=useState<string>('')
     const [index,setIndex]=useState<number>(0)
@@ -26,7 +30,8 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [started,setStarted] = useState<Boolean>(false)
     const [stop, setStop] = useState<boolean>(false)
     const [seeResults,setSeeResults]=useState<boolean>(false)
-    const [results,setResults]=useState<results>()
+    let [results,setResults]=useState<any>()
+    const [key,setKey]=useState<number>(0)
     const handleSubmit=async(mistakes:string[])=>{
         try{
             let findWPM:number
@@ -47,12 +52,14 @@ const Home:FC<Props>=({currentUser,token})=>{
             index==0?  findWPM = 0: findWPM = words.substring(0,index).split(' ').length
             
             // index==0 ? accuracy=0: accuracy = index/mistakes.length
-            let count:any = {}
+            let count:any={}
             mistakes.forEach((idx)=>{
                 count[idx] = (count[idx]||0)+1
+                console.log(count[idx])
             })
             let container = []
-            for(const [key,value] of Object.entries(count)){
+            console.log(count)
+            for(const [key,value] of Object.entries<number>(count)){
                 let newEntry={
                     char:key,
                     amount:value
@@ -66,9 +73,17 @@ const Home:FC<Props>=({currentUser,token})=>{
             //     amount:container.amount
             // })
             let token = localStorage.getItem('jwt')
+            const structureResults = {
+                wpm: findWPM,
+                mistakes:container
+            }
+            console.log(structureResults)
+            setResults(structureResults)
+            setSeeResults(true)
             if(!token){
                 //count everthing up display result 
-                
+
+                // setResults()
             }
             //else carry on with user
             if(!token) throw new Error('User not logged in')
@@ -168,6 +183,24 @@ const Home:FC<Props>=({currentUser,token})=>{
     //         </>
     //     )
     // }
+    let display
+    if(seeResults){
+        let innerDisplay = results.mistakes.map((mistake:{char:string, amount:number})=>{
+
+            return(
+                <p key={`${mistake.char}`}>character: {mistake.char}, amount: {mistake.amount}</p>
+            )
+        })
+        display = (
+            <>
+            <p>WPM: {results.wpm}</p>
+            <p>Mistakes you made: </p>
+                {innerDisplay}
+            </>
+        )
+    }else{
+        display=null
+    }
 
     const typedText = words.substring(0,index)
     const untypedText = words.substring(index, words.length-1)
@@ -191,6 +224,7 @@ const Home:FC<Props>=({currentUser,token})=>{
             {untypedText}
             </span>
             </div>
+            {display}
         </div>
 
         </>
