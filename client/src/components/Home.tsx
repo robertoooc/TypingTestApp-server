@@ -1,7 +1,7 @@
 import { FC ,useState, useEffect } from "react";
 import axios from 'axios'
 import { useNavigate,NavigateFunction, useParams } from "react-router-dom";
-
+import {TfiTimer} from 'react-icons/tfi'
 interface currentUser{
     name?: string;
     email?: string;
@@ -26,7 +26,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [mistakes,setMistakes]=useState<string[]>([])
     const [userKey, setUserKey]= useState<string|null>('')
     const [load,setLoad] = useState<Boolean>(false)
-    const [time, setTime] = useState<number>(5)
+    const [time, setTime] = useState<number>(60)
     const [started,setStarted] = useState<Boolean>(false)
     const [newTest, setNewTest] = useState<boolean>(false)
     const [seeResults,setSeeResults]=useState<boolean>(false)
@@ -125,7 +125,11 @@ const Home:FC<Props>=({currentUser,token})=>{
     useEffect(()=>{
         if(load&& started){ 
                 document.addEventListener('keydown',(e)=>{
-                    setUserKey(e.key)
+                    if(e.key == ' '){
+                        setUserKey('space')
+                    }else{
+                        setUserKey(e.key)
+                    }
                 })
                 document.addEventListener('keyup',()=>{
                     setUserKey(null)
@@ -136,7 +140,7 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     useEffect(()=>{
         if((userKey!=null)&&(started)&&(!newTest)){
-            if(words[index]=== userKey){
+            if(words[index]=== userKey|| (words[index]== ' ' && userKey== 'space')){
                 if(words[index+1]===words[index]){
                     setLoad(false)
                     setLoad(true)
@@ -174,15 +178,25 @@ const Home:FC<Props>=({currentUser,token})=>{
         let innerDisplay = results.mistakes.map((mistake:{char:string, amount:number})=>{
 
             return(
-                <p key={`${mistake.char}`} style={{display:'inline-block',padding:'10px'}}>character: {mistake.char}, amount: {mistake.amount}</p>
+                <div key={`${mistake.char}`} className='flex items-center my-1 bg-stone-200 rounded-lg space-x-4 place-content-around'>
+                <p>character: {mistake.char}</p>
+                <p>amount: {mistake.amount}</p>
+                </div>
             )
         })
         display = (
-            <span style={{textAlign:'center'}}>
-            <p>WPM: {results.wpm}</p>
-            <p>Mistakes you made: </p>
-                {innerDisplay}
-            </span>
+
+
+            <div className="h-2/6 w-1/3 my-0 mx-auto overflow-y-auto">
+                <div className=" h-16 bg-neutral-700 items-center rounded-lg">
+                    <p className="font-mono text-lg font-semibold text-white text-center">WPM: {results.wpm} </p>
+                    <p className="font-mono text-lg font-semibold text-white text-center">Mistakes you made: </p>
+                </div>
+                <div>
+                    {innerDisplay}
+                </div>
+            </div>
+
         )
     }else{
         display=null
@@ -190,29 +204,34 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     const typedText = words.substring(0,index)
     const untypedText = words.substring(index, words.length-1)
+     
+    const displayText = (
+        <div className="bg-neutral-300 w-7/12 mx-auto rounded-xl ">
+            <p className="inline text-gray-600 bg-zinc-400 leading-loose tracking-wider">{typedText}</p>
+            <p className="inline leading-loose tracking-wider">{untypedText}</p>
+        </div>
+    )
     return(
-        <>
-
-
+        
+        
         <div>
-
-        {time}
-            {newTest ? <button onClick={handleNewTest}>New Test</button> :null}
+            <div className="h-20 flex  space-x-2 bg-stone-900 text-white w-full w-screen whitespace-normal place-content-around items-center">
+                <span className="flex items-center">
+                <TfiTimer className=" text-xl"/>
+                <p className="font-mono text-xl font-semibold flex">:{time}</p>
+                </span>
+                <p className="font-mono text-xl font-semibold">Tested on: {words[0]}</p>
+            </div>
             <br></br>
-            <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
-                {started == false? <p>click on me to start</p>:null}
-                <br></br>
-            <span style={{color: "grey"}}>
-            {typedText}
-            </span>
-            <span>
-            {untypedText}
-            </span>
+            <div>
+                {displayText}
+                {started == false? <button onClick={()=>setStarted(true)} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>Start</button>:null}
+            {newTest ? <button onClick={handleNewTest} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>New Test</button> :null}
             </div>
             {display}
         </div>
 
-        </>
+
     )
 }
 export default Home

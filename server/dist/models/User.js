@@ -6,6 +6,8 @@ const Mistakes = new Schema({
 const Tests = new Schema({
     wpm: { type: Number },
     mistakes: [Mistakes]
+}, {
+    timestamps: true
 });
 const UserSchema = new Schema({
     name: { type: String, required: true },
