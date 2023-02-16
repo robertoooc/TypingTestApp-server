@@ -15,7 +15,6 @@ declare var process : {
 router.get('/',middleware,async(req: Request,res: Response)=>{
     try{
         const findUser = await User.findById(res.locals.user._id)
-        console.log(findUser)
         if (findUser){
             return res.status(200).json(findUser)
         }
@@ -27,15 +26,6 @@ router.get('/',middleware,async(req: Request,res: Response)=>{
     }
 })
 
-// router.post('/', async(req:Request,res:Response)=>{
-//     try{
-//         const newUser = new User(req.body)
-//         const saveUser = await newUser.save()
-//         res.json({saveUser})
-//     }catch(err){
-//         res.status(500).json({message: 'My bad'})
-//     }
-// })
 
 router.delete('/',middleware, async (req:Request, res: Response)=>{
     try{
@@ -51,7 +41,6 @@ router.delete('/',middleware, async (req:Request, res: Response)=>{
 
 router.put('/', middleware, async(req:Request, res:Response)=>{
     try{
-        console.log(res.locals.user, 'success')
         const findUser = await User.findById(res.locals.user._id)
         if(!findUser) return res.status(404).json({message:"User not FOunnd"})
         const comparePassword = await compareSync(req.body.oldPassword, findUser.password)
@@ -62,7 +51,6 @@ router.put('/', middleware, async(req:Request, res:Response)=>{
         const hashedPassword = hashSync(newPassword, salt)
         const updatedUser = await User.findByIdAndUpdate(findUser.id,{password: hashedPassword})
         if(!updatedUser) return res.status(500).json({message:'My bad'})
-        console.log(updatedUser, 'updated User 🧽')
         const jwtPayload: {name: string, email: string, id: string} = {
             name: updatedUser.name,
             email: updatedUser.email,
@@ -88,8 +76,6 @@ router.post('/register', async(req:Request,res:Response)=>{
         const saltRounds:number = 12
         const salt = genSaltSync(saltRounds)
         const hashedPassword = hashSync(password, salt)
-        console.log(hashedPassword)
-
         const newUser = await User.create({
             name: req.body.name, 
             email: req.body.email,

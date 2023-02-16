@@ -37,7 +37,6 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     const handleNewTest =()=>{
         navigate(suggestionUrl) 
-        // window.location.reload()
         navigate(0)
     }
 
@@ -48,10 +47,8 @@ const Home:FC<Props>=({currentUser,token})=>{
             let count:any={}
             mistakes.forEach((idx)=>{
                 count[idx] = (count[idx]||0)+1
-                console.log(count[idx])
             })
             let container = []
-            console.log(count)
             for(const [key,value] of Object.entries<number>(count)){
                 let newEntry={
                     char:key,
@@ -59,35 +56,28 @@ const Home:FC<Props>=({currentUser,token})=>{
                 }
                 container.push(newEntry)
             }
-            console.log(container)
             let token = localStorage.getItem('jwt')
             const structureResults = {
                 wpm: findWPM,
                 mistakes:container
             }
-            console.log(structureResults)
             setResults(structureResults)
             setSeeResults(true)
-            if(!token){
-                //count everthing up display result 
 
-                // setResults()
-            }
-            //else carry on with user
-            if(!token) throw new Error('User not logged in')
-            console.log('success?')
-            const payload={
-                id: currentUser?._id,
-                wpm: findWPM,
-                mistakes: container
-            }
-            const sendData = await axios.post('http://localhost:8000/tests',payload,{
-                headers: {
-                  'Authorization': `${token}`
+            if(token){
+                const payload={
+                    id: currentUser?._id,
+                    wpm: findWPM,
+                    mistakes: container
                 }
-            })
-            console.log(token)
-
+                const sendData = await axios.post('http://localhost:8000/tests',payload,{
+                    headers: {
+                        'Authorization': `${token}`
+                    }
+                })
+                console.log(sendData.data)
+            }
+                
             if(container.length==0){
                 setNewTest(true)
                 const alphabet ="abcdefghijklmnopqrstuvwxyz"
@@ -100,8 +90,6 @@ const Home:FC<Props>=({currentUser,token})=>{
                 setNewTest(true)
                 setSuggestionUrl(`/test/${suggestion.char}`)
             }
-            // sugestion.char will be chosen
-            // /home/:sugestion.char
             return 'got it'
         }catch(err){
             console.log(typeof(err))
@@ -113,7 +101,6 @@ const Home:FC<Props>=({currentUser,token})=>{
     useEffect(()=>{
         const pingWords=async()=>{
             try{
-                // console.log(id?.length)
                 if(id?.length == undefined){
                     id = 'a'
                 }else{
@@ -148,8 +135,7 @@ const Home:FC<Props>=({currentUser,token})=>{
 
 
     useEffect(()=>{
-        if((userKey!=null)&&started){
-            console.log(userKey)
+        if((userKey!=null)&&(started)&&(!newTest)){
             if(words[index]=== userKey){
                 if(words[index+1]===words[index]){
                     setLoad(false)
@@ -159,7 +145,6 @@ const Home:FC<Props>=({currentUser,token})=>{
                 setIndex(newIndex)
             }else{
                 if(userKey.length > 0){
-                    console.log(`wrong, ${userKey} supposed to be ${words[index]}`)
                     setMistakes([...mistakes, userKey])
                 }
             }
@@ -171,9 +156,7 @@ const Home:FC<Props>=({currentUser,token})=>{
         if(started){
                 const seconds = setInterval(()=>{
                     if(time==0){
-                        const check = handleSubmit(mistakes)
-                        console.log(check)
-                        
+                        const check = handleSubmit(mistakes)      
                         clearInterval(seconds)
                         return time 
                 } 
@@ -219,7 +202,6 @@ const Home:FC<Props>=({currentUser,token})=>{
             <br></br>
             <div style={{backgroundColor: "grey"}} onClick={()=>setStarted(true)}>
                 {started == false? <p>click on me to start</p>:null}
-                {/* {started == false? <p>click on me to start</p>:<button onClick={()=>handleSubmit(mistakes)}>Submit</button>} */}
                 <br></br>
             <span style={{color: "grey"}}>
             {typedText}

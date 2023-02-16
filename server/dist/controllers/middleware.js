@@ -10,11 +10,9 @@ export const middleware = async (req, res, next) => {
         const decode = await jwt.verify(authHeader, process.env.JWT_SECRET);
         const foundUser = await User.findOne({ _id: decode.id });
         res.locals.user = foundUser;
-        console.log(foundUser);
         next();
     }
     catch (err) {
-        console.log(err);
         res.locals.user = null;
         next();
     }

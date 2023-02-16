@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FC, useEffect, useState } from "react";
-import { appendFile } from "fs";
+import { useNavigate,NavigateFunction } from "react-router-dom";
+import {FaKeyboard} from 'react-icons/fa'
 interface currentUser{
     name?: string;
     email?: string;
@@ -12,41 +13,60 @@ interface Props {
     setCurrentUser: (val:currentUser|null)=>void;
 }
 const NavBar:FC<Props>=({currentUser,setCurrentUser}) =>{
-    // const [letter,setLetter] = useState('a')
+    let navigate:NavigateFunction =useNavigate()
     const handleLogout=()=>{
         if (localStorage.getItem('jwt')){
             localStorage.removeItem('jwt')
             setCurrentUser(null)
+            navigate(0)
         }
     }
-    // useEffect(()=>{
         const alphabet ="abcdefghijklmnopqrstuvwxyz"
         const randomSuggestion = alphabet[Math.floor(Math.random()*26)]
-        // console.log(randomSuggestion)
-    // },[])
+
     const loggedIn = (
-        <nav>
-            <Link to={`/test/${randomSuggestion}`}>Home</Link><br></br>
-            <Link to='/profile'>Profile</Link><br></br>
-            {/* <div onClick={handleLogout}> */}
-            <div onClick={handleLogout}>
-                Logout
+        <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white min-h-full">
+            <div className="flex items-center gap-3 px-1 py-3">
+            <FaKeyboard fontSize={24}/>
+            <span className="text-neutral-100 text-lg">Typing Test App</span>
             </div>
-        </nav>
+            <div className="flex-1">
+            <Link to={`/test/${randomSuggestion}`} className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'}>
+            <span className="text-xl">Home</span>
+            </Link>
+
+            <Link to='/profile' className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'}>
+            <span className="text-xl">Profile</span>
+            </Link>
+            </div>
+            <span className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'} onClick={handleLogout}>
+                <span className="text-xl">Logout</span>
+            </span>
+        </div>
     )
 
     const loggedOut = (
-        <nav>
-            <Link to={`/test/${randomSuggestion}`}>Home</Link><br></br>
-            {/* <Link to='/login'>Login</Link> */}
-            <Link to='/register'>Register</Link><br></br>
-            <Link to='/login'>Login</Link><br></br>
-        </nav>
+
+        <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white min-h-full h-full">
+            <div className="flex items-center gap-3 px-1 py-3">
+            <FaKeyboard fontSize={24}/>
+            <span className="text-neutral-100 text-lg">Typing Test App</span>
+            </div>
+            <div className="flex-1">
+            <Link to={`/test/${randomSuggestion}`} className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'}>
+            <span className="text-xl">Home</span>
+            </Link>
+
+            <Link to='/register' className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'}>
+            <span className="text-xl">Register</span>
+            </Link>
+            <Link to='/login' className={'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'}>
+            <span className="text-xl">Login</span>
+            </Link>
+            </div>
+        </div>
+
     )
-
-
-
-
 
     return(
         <>

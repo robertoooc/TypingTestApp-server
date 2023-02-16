@@ -9,7 +9,6 @@ const router = express.Router();
 router.get('/', middleware, async (req, res) => {
     try {
         const findUser = await User.findById(res.locals.user._id);
-        console.log(findUser);
         if (findUser) {
             return res.status(200).json(findUser);
         }
@@ -21,15 +20,6 @@ router.get('/', middleware, async (req, res) => {
         res.status(500).json({ message: 'My bad' });
     }
 });
-// router.post('/', async(req:Request,res:Response)=>{
-//     try{
-//         const newUser = new User(req.body)
-//         const saveUser = await newUser.save()
-//         res.json({saveUser})
-//     }catch(err){
-//         res.status(500).json({message: 'My bad'})
-//     }
-// })
 router.delete('/', middleware, async (req, res) => {
     try {
         const deleteUser = await User.findOneAndDelete({ _id: res.locals.user._id });
@@ -44,7 +34,6 @@ router.delete('/', middleware, async (req, res) => {
 });
 router.put('/', middleware, async (req, res) => {
     try {
-        console.log(res.locals.user, 'success');
         const findUser = await User.findById(res.locals.user._id);
         if (!findUser)
             return res.status(404).json({ message: "User not FOunnd" });
@@ -58,7 +47,6 @@ router.put('/', middleware, async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(findUser.id, { password: hashedPassword });
         if (!updatedUser)
             return res.status(500).json({ message: 'My bad' });
-        console.log(updatedUser, 'updated User 🧽');
         const jwtPayload = {
             name: updatedUser.name,
             email: updatedUser.email,
@@ -84,7 +72,6 @@ router.post('/register', async (req, res) => {
         const saltRounds = 12;
         const salt = genSaltSync(saltRounds);
         const hashedPassword = hashSync(password, salt);
-        console.log(hashedPassword);
         const newUser = await User.create({
             name: req.body.name,
             email: req.body.email,

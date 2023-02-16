@@ -37,13 +37,13 @@ interface Props {
         }catch(err:any){
             console.log(err)
             if(err.response){
-                setMessage(err.submit.data.message)
+                setMessage(err.response.data.message)
             }
         }
     }
     useEffect(()=>{
         if(localStorage.getItem('jwt')){
-            navigate('/')
+            navigate('/profile')
         }
     },[])
 

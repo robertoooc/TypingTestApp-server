@@ -22,11 +22,16 @@ const Profile:FC<Props> = ({currentUser})=>{
         mistakes: [mistakes];
         _id: string;
     }
+    interface accountInfo{
+        name: string;
+        wpm: number;
+    }
 
     const [oldPassword,setOldPassword] = useState<string>('')
     const [newPassword,setNewPassword] = useState<string>('')
     const [seeSettings,setSeeSettings] = useState<Boolean>(false)
     const [userData, setUserData] = useState<Array<userData>>()
+    const [userInfo,setUserInfo]=useState<accountInfo>()
     const navigate:NavigateFunction = useNavigate()
 
     const deleteAccount = async()=>{
@@ -75,11 +80,14 @@ const Profile:FC<Props> = ({currentUser})=>{
                           'Authorization': `${token}`
                         }
                 })
-                console.log(pingBackend.data.tests)
+                console.log(pingBackend.data)
                 setUserData(pingBackend.data.tests)
-                // const userInfo = pingBackend.data.tests.map((test:any)=>{
-                    
-                // })
+                const structureUserInfo={
+                    name: pingBackend.data.name,
+                    wpm: pingBackend.data.wpm
+                }
+                setUserInfo(structureUserInfo)
+
             }catch(err){
                 console.log(err)
             }
@@ -115,36 +123,51 @@ const Profile:FC<Props> = ({currentUser})=>{
             </>
     )
 
-
-    console.log(userData)
-    const viewData = userData?.map((test)=>{
-        let mistakeMessage
-        if (test.mistakes.length > 0){
-            let mistake = test.mistakes.reduce((prev,current)=>{
-                return (prev.amount > current.amount) ? prev :current
-            })
-            mistakeMessage= (
-                <>
+    let viewData
+    if(userData?.length ==0){
+        viewData = (
+            <>
+            <p>No Test Results</p>
+            </>
+        )
+    }else{
+        viewData = userData?.map((test)=>{
+            let mistakeMessage
+            if (test.mistakes.length > 0){
+                let mistake = test.mistakes.reduce((prev,current)=>{
+                    return (prev.amount > current.amount) ? prev :current
+                })
+                mistakeMessage= (
+                    <>
                 <p>most common Mistake : {mistake.char}</p>
                 <p>Mistake Amount :  {mistake.amount}</p>
                 </>
                 )
-        }else{
+            }else{
             mistakeMessage = (
                 <>
                 <p>Wow no Mistakes</p>
                 </>
                 )
-        }
-        return(
-            <div key={`${test._id}`} style={{border:'1px solid black',marginTop:'3px', padding: '10px'}}>
+            }
+            return(
+                <div key={`${test._id}`} style={{border:'1px solid black',marginTop:'3px', padding: '10px'}}>
             <p>WPM: {test.wpm}</p>
             {mistakeMessage}
             </div >
         )
     })
+}
+
+    let displayUserInfo = (
+        <>
+        <p>Welcome, {userInfo?.name}</p>
+        <p>WPM: {userInfo?.wpm}</p>
+        </>
+    )
     return(
         <>
+        {displayUserInfo}
         {seeSettings? edit:<button onClick={()=>setSeeSettings(true)}>Settings</button>}
         {viewData}
         </>

@@ -12,7 +12,6 @@ declare var process : {
 } 
 router.post('/', async(req:Request, res: Response)=>{
     try{
-        // let updateWPM: boolean = false
         const authHeader = req.headers.authorization
         if (!authHeader) throw new Error('JWT token is missing')
         interface JWTPayload{
@@ -35,12 +34,8 @@ router.post('/', async(req:Request, res: Response)=>{
         await foundUser.save()
         if (res.locals.user.wpm < wpm){
            const updateWPM= await User.findByIdAndUpdate(res.locals.user.id,{wpm: wpm})
-           console.log(updateWPM)
-        // await foundUser.update()
-        // foundUser.wpm = wpm
             res.json({updateWPM})
         }else{
-            console.log(foundUser)
             res.json({foundUser})
         }
         // {
@@ -58,7 +53,7 @@ router.post('/', async(req:Request, res: Response)=>{
         //        ]
         //    }
     }catch(err:any){
-        console.log(err.message)
+        res.status(500).json({message:'My bad'})
     }
 })
 

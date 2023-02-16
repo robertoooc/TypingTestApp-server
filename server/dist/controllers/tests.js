@@ -6,7 +6,6 @@ dbConnect();
 const router = express.Router();
 router.post('/', async (req, res) => {
     try {
-        // let updateWPM: boolean = false
         const authHeader = req.headers.authorization;
         if (!authHeader)
             throw new Error('JWT token is missing');
@@ -25,13 +24,9 @@ router.post('/', async (req, res) => {
         await foundUser.save();
         if (res.locals.user.wpm < wpm) {
             const updateWPM = await User.findByIdAndUpdate(res.locals.user.id, { wpm: wpm });
-            console.log(updateWPM);
-            // await foundUser.update()
-            // foundUser.wpm = wpm
             res.json({ updateWPM });
         }
         else {
-            console.log(foundUser);
             res.json({ foundUser });
         }
         // {
@@ -50,7 +45,7 @@ router.post('/', async (req, res) => {
         //    }
     }
     catch (err) {
-        console.log(err.message);
+        res.status(500).json({ message: 'My bad' });
     }
 });
 export default router;

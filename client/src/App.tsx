@@ -1,6 +1,7 @@
 import {FC, useState, useEffect} from 'react';
 import jwt_decode from 'jwt-decode'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import './App.css'
 import NavBar from './components/Navbar';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -27,14 +28,14 @@ const App:FC=()=> {
   // }
 
   return (
-    <BrowserRouter>
-    <header>
+    <div className='flex flex-row bg-neutral-100 h-screen w-screen'>
+    <BrowserRouter >
+
       <NavBar
          currentUser= {currentUser}
          setCurrentUser={setCurrentUser}
-      />
-    </header>
-    {/* <Login/> */}
+         />
+
 
 
       <Routes>
@@ -46,8 +47,8 @@ const App:FC=()=> {
         path='/register' 
         element={
           <Register 
-            currentUser={currentUser} 
-            setCurrentUser={setCurrentUser}
+          currentUser={currentUser} 
+          setCurrentUser={setCurrentUser}
           />
         }/>
         <Route
@@ -58,18 +59,19 @@ const App:FC=()=> {
             setCurrentUser={setCurrentUser}
             />
           }
-        />
+          />
         <Route
           path='/profile'
           element={
             <Profile
               currentUser={currentUser}
+              />
+            }
             />
-          }
-        />
 
       </Routes>
     </BrowserRouter>
+            </div>
   );
 }
 
