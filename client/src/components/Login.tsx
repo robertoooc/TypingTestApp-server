@@ -48,27 +48,35 @@ interface Props {
     },[])
 
     return(
-        <div>
-            {message}
-            <form onSubmit={handleSubmit}>
-                <label htmlFor='email'>Email: </label>
-                <input
-                    autoComplete='off'  
-                    type='email'
-                    id='email'
-                    onChange={e=>setEmail(e.target.value)}
-                    value={email}
-                />
-                <label htmlFor='password'>Password: </label>
-                <input
-                    autoComplete='off'
-                    type='password'
-                    id='password'
-                    onChange={e=>setPassword(e.target.value)}
-                    value={password}
-                />
-                <button type='submit'>Login</button>
+        <div className=" m-auto">
+            <form onSubmit={handleSubmit} className='max-w-[400px] w-full mx-auto bg-zinc-800 p-8 px-8 rounded-lg'>
+                <div className="flex flex-col text-gray-400 py-2">
+                    <label htmlFor='email'>Email: </label>
+                    <input
+                        autoComplete='off'  
+                        type='email'
+                        id='email'
+                        onChange={e=>setEmail(e.target.value)}
+                        required
+                        value={email}
+                        className="rounded-lg text-black"
+                        />
+                </div>
+                <div className="flex flex-col text-gray-400 py-2">
+                    <label htmlFor='password'>Password: </label>
+                    <input
+                        autoComplete='off'
+                        type='password'
+                        id='password'
+                        onChange={e=>setPassword(e.target.value)}
+                        value={password}
+                        required
+                        className="rounded-lg text-black"
+                        />
+                </div>
+                <button type='submit' className="w-full my-5 py-2 bg-zinc-700 text-white font-semibold rounded-lg">Login</button>
             </form>
+                        {message}
         </div>
     )
 }

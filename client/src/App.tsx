@@ -28,7 +28,7 @@ const App:FC=()=> {
   // }
 
   return (
-    <div className='flex flex-row bg-neutral-100 h-screen w-screen'>
+    <div className='flex flex-row bg-neutral-100 h-screen w-screen h-full w-full overflow-hidden'>
     <BrowserRouter >
 
       <NavBar

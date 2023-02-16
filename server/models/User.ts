@@ -21,6 +21,8 @@ interface ITests extends Document{
 const Tests: Schema= new Schema({
     wpm: { type: Number},
     mistakes: [Mistakes]
+},{
+    timestamps:true
 })
 
  interface IUser extends Document{

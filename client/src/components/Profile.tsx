@@ -1,7 +1,8 @@
 import { FC,useEffect, useState } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import axios from "axios";
-
+import {GrUserSettings, GrClose} from 'react-icons/gr'
+import {RiDeleteBin6Line} from 'react-icons/ri'
 interface currentUser{
     name?: string;
     email?: string;
@@ -96,31 +97,45 @@ const Profile:FC<Props> = ({currentUser})=>{
     },[])
 
     const edit =(
-        <>
-        <form onSubmit={handleSubmit}>
-        <label htmlFor="oldPassword">Old Password: </label>
-        <input
-            id="oldPassword"
-            type='password'
-            onChange={(e)=>setOldPassword(e.target.value)}
-            value={oldPassword}
-            autoComplete='off' 
-            required
-            />
-        <label htmlFor="newPassword">New Password: </label>
-        <input
-            id="NewPassword"
-            type='password'
-            onChange={(e)=>setNewPassword(e.target.value)}
-            value={newPassword}
-            autoComplete='off' 
-            required
-            />
-            <button type="submit">Submit</button>
-            </form>
-            <button onClick={deleteAccount}>Delete Account</button>
-            <button onClick={()=>setSeeSettings(false)} >Close</button>
-            </>
+        
+            <div>
+                <form onSubmit={handleSubmit} className='max-w-[250px] w-full m-10 bg-zinc-800 p-8 px-8 rounded-lg'>
+                    <div className="text-white font-semibold">
+                    <GrClose onClick={()=>setSeeSettings(false)} />
+                    </div>
+                    <div className="flex flex-col text-gray-400 py-2">
+                        <label htmlFor="oldPassword">Old Password: </label>
+                        <input
+                            id="oldPassword"
+                            type='password'
+                            onChange={(e)=>setOldPassword(e.target.value)}
+                            value={oldPassword}
+                            autoComplete='off' 
+                            required
+                            className="rounded-lg text-black"
+                            />
+                    </div>
+
+                    <div className="flex flex-col text-gray-400 py-2">
+                        <label htmlFor="newPassword">New Password: </label>
+                        <input
+                            id="NewPassword"
+                            type='password'
+                            onChange={(e)=>setNewPassword(e.target.value)}
+                            value={newPassword}
+                            autoComplete='off' 
+                            required
+                            className="rounded-lg text-black"
+                            />
+                    </div>
+                    <button type='submit' className="w-full my-5 py-2 bg-zinc-700 text-white font-semibold rounded-lg">Submit</button>
+                    <div className="flex items-center w-full my-2 py-2 bg-zinc-700 text-white font-semibold rounded-lg">
+                        <span onClick={deleteAccount} className="pl-5">Delete Account </span>
+                        <RiDeleteBin6Line onClick={deleteAccount} className='ml-1'/>
+                    </div>
+                </form>
+            </div>
+           
     )
 
     let viewData
@@ -138,39 +153,54 @@ const Profile:FC<Props> = ({currentUser})=>{
                     return (prev.amount > current.amount) ? prev :current
                 })
                 mistakeMessage= (
-                    <>
-                <p>most common Mistake : {mistake.char}</p>
-                <p>Mistake Amount :  {mistake.amount}</p>
-                </>
+                <div className="text-center">
+                    <p className="font-sans text-base">Most Frequent: {mistake.char}</p>
+                    <p className="font-sans text-base">Amount :  {mistake.amount}</p>
+                </div>
                 )
             }else{
             mistakeMessage = (
-                <>
+                <div>
                 <p>Wow no Mistakes</p>
-                </>
+                </div>
                 )
-            }
+            } 
+            // console.log(test)
             return(
-                <div key={`${test._id}`} style={{border:'1px solid black',marginTop:'3px', padding: '10px'}}>
-            <p>WPM: {test.wpm}</p>
-            {mistakeMessage}
+            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg'>
+                <div className="">
+                    <p className="font-sans text-base">{test.wpm}</p>
+                </div>
+                    {mistakeMessage}    
+                <div>
+                    date
+                </div>
             </div >
         )
     })
 }
 
     let displayUserInfo = (
-        <>
-        <p>Welcome, {userInfo?.name}</p>
-        <p>WPM: {userInfo?.wpm}</p>
-        </>
+        <div className="h-20 flex  space-x-2 bg-stone-900 text-white w-full w-screen whitespace-normal place-content-around items-center">
+        <p className="font-mono text-2xl font-semibold">Welcome, {userInfo?.name}</p>
+        <p className="font-mono text-2xl font-semibold">WPM: {userInfo?.wpm}</p>
+        </div>
     )
     return(
-        <>
+        <div className="mx-auto">
         {displayUserInfo}
-        {seeSettings? edit:<button onClick={()=>setSeeSettings(true)}>Settings</button>}
-        {viewData}
-        </>
+        {seeSettings? edit:<div className="flex m-6"><GrUserSettings onClick={()=>setSeeSettings(true)} className='text-xl '/></div>}
+        <div className="h-4/6 w-9/12 mx-auto overflow-y-auto">
+            <div className="flex place-content-around h-16 bg-neutral-700 items-center rounded-lg">
+                <p className="font-mono text-xl font-bold text-white">WPM</p>
+                <p className="font-mono text-xl font-bold text-white">Mistakes</p>
+                <p className="font-mono text-xl font-bold text-white">Date</p>
+            </div>
+            <div className="mt-5 flex flex-col-reverse divide-y divide-y-reverse">
+            {viewData}
+            </div>
+        </div>
+        </div>
     )
 }
 export default Profile

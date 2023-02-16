@@ -193,7 +193,6 @@ const Home:FC<Props>=({currentUser,token})=>{
     return(
         <>
 
-        Home
 
         <div>
 
