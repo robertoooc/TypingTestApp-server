@@ -82,6 +82,7 @@ const Register:FC<Props> = ({currentUser,setCurrentUser})=>{
                     </div>
                     <button type="submit" className="w-full my-5 py-2 bg-zinc-700 text-white font-semibold rounded-lg">Submit</button>
                 </form>
+                <p className='text-center text-red-600 mt-2'>{message}</p>
         </div>
 
     )

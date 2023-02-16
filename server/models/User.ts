@@ -12,6 +12,8 @@ interface IMistakes extends Document{
 const Mistakes: Schema= new Schema({
     char: { type: String, lowercase: true },
     amount: {type: Number}
+},{
+    timestamps: true
 })
 
 interface ITests extends Document{
@@ -20,7 +22,8 @@ interface ITests extends Document{
 }
 const Tests: Schema= new Schema({
     wpm: { type: Number},
-    mistakes: [Mistakes]
+    mistakes: [Mistakes],
+    time : { type : Date, default: Date.now }
 },{
     timestamps:true
 })

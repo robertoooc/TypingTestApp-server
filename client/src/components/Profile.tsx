@@ -22,6 +22,7 @@ const Profile:FC<Props> = ({currentUser})=>{
         wpm: number;
         mistakes: [mistakes];
         _id: string;
+        time: string;
     }
     interface accountInfo{
         name: string;
@@ -81,7 +82,6 @@ const Profile:FC<Props> = ({currentUser})=>{
                           'Authorization': `${token}`
                         }
                 })
-                console.log(pingBackend.data)
                 setUserData(pingBackend.data.tests)
                 const structureUserInfo={
                     name: pingBackend.data.name,
@@ -147,7 +147,8 @@ const Profile:FC<Props> = ({currentUser})=>{
         )
     }else{
         viewData = userData?.map((test)=>{
-            let mistakeMessage
+            // console.log(userData[0].time)
+            let mistakeMessage, date
             if (test.mistakes.length > 0){
                 let mistake = test.mistakes.reduce((prev,current)=>{
                     return (prev.amount > current.amount) ? prev :current
@@ -158,9 +159,12 @@ const Profile:FC<Props> = ({currentUser})=>{
                     <p className="font-sans text-base">Amount :  {mistake.amount}</p>
                 </div>
                 )
+                date=test.time.slice(0,10)
+                console.log(date)
+                // console.log(test.time)
             }else{
             mistakeMessage = (
-                <div>
+                <div className="text-center">
                 <p>Wow no Mistakes</p>
                 </div>
                 )
@@ -173,7 +177,7 @@ const Profile:FC<Props> = ({currentUser})=>{
                 </div>
                     {mistakeMessage}    
                 <div>
-                    date
+                    {date}
                 </div>
             </div >
         )

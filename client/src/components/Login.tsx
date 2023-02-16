@@ -76,7 +76,7 @@ interface Props {
                 </div>
                 <button type='submit' className="w-full my-5 py-2 bg-zinc-700 text-white font-semibold rounded-lg">Login</button>
             </form>
-                        {message}
+                        <p className='text-center text-red-600 mt-2'>{message}</p>
         </div>
     )
 }
