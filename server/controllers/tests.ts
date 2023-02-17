@@ -12,6 +12,7 @@ declare var process : {
 } 
 router.post('/', async(req:Request, res: Response)=>{
     try{
+        // checking that user making requests is logged in through jwts
         const authHeader = req.headers.authorization
         if (!authHeader) throw new Error('JWT token is missing')
         interface JWTPayload{
@@ -30,9 +31,11 @@ router.post('/', async(req:Request, res: Response)=>{
             wpm,
             mistakes
         }
+        // adding new test to assigned user
         foundUser.tests.push(payload)
         await foundUser.save()
         if (res.locals.user.wpm < wpm){
+            // if new test has an improved wpm update the user's wpm field 
            const updateWPM= await User.findByIdAndUpdate(res.locals.user.id,{wpm: wpm})
             res.json({updateWPM})
         }else{

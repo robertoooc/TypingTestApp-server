@@ -6,6 +6,7 @@ import { middleware } from './middleware.js'
 import jwt from 'jsonwebtoken'
 dbConnect()
 const router = express.Router()
+// had issues using process.env variables so declared the type here
 declare var process : {
     env : {
         JWT_SECRET: string

@@ -27,5 +27,6 @@ app.use('/users',user)
 app.use('/tests',test)
 app.listen(PORT, ()=>{
     console.log(PORT)
+    // had issues with exporting just the model folder so exported a function to connect to db instead 
      dbConnect()
 })

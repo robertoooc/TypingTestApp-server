@@ -36,6 +36,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     let {id} = useParams()
 
     const handleNewTest =()=>{
+        // resetting the url based on suggested from test results then refreshes
         navigate(suggestionUrl) 
         navigate(0)
     }
@@ -108,6 +109,7 @@ const Home:FC<Props>=({currentUser,token})=>{
                         id = id[0]
                     }
                 }
+                // pinging api to get array of words and join them to string to present text
                 const response = await axios.get(`https://api.datamuse.com/words?sp=${id}*`)
                 const listWords = response.data.map((word:{word: string, score:number})=>{
                     return `${word.word}`
@@ -125,6 +127,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     useEffect(()=>{
         if(load&& started){ 
                 document.addEventListener('keydown',(e)=>{
+                    // taking in the key pressed
                     if(e.key == ' '){
                         setUserKey('space')
                     }else{
@@ -140,7 +143,9 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     useEffect(()=>{
         if((userKey!=null)&&(started)&&(!newTest)){
+            // checking if user typed in correct char
             if(words[index]=== userKey|| (words[index]== ' ' && userKey== 'space')){
+                // if the next index is the same as the current (ex: 'cc' ) the userKey isn't updated so changing the load calls the useEffect because of it's dependency and allows the reset to happen
                 if(words[index+1]===words[index]){
                     setLoad(false)
                     setLoad(true)
@@ -148,6 +153,7 @@ const Home:FC<Props>=({currentUser,token})=>{
                 let newIndex = index +1
                 setIndex(newIndex)
             }else{
+                // if wrong adding to mistakes
                 if(userKey.length > 0){
                     setMistakes([...mistakes, userKey])
                 }
@@ -158,6 +164,7 @@ const Home:FC<Props>=({currentUser,token})=>{
 
     useEffect(()=>{
         if(started){
+            // game timer that starts ticking as soon as the start button is clicked and ends test
                 const seconds = setInterval(()=>{
                     if(time==0){
                         const check = handleSubmit(mistakes)      
@@ -176,7 +183,6 @@ const Home:FC<Props>=({currentUser,token})=>{
     let display
     if(seeResults){
         let innerDisplay = results.mistakes.map((mistake:{char:string, amount:number})=>{
-
             return(
                 <div key={`${mistake.char}`} className='flex items-center my-1 bg-stone-200 rounded-lg space-x-4 place-content-around'>
                 <p>character: {mistake.char}</p>
@@ -184,9 +190,8 @@ const Home:FC<Props>=({currentUser,token})=>{
                 </div>
             )
         })
+
         display = (
-
-
             <div className="h-2/6 w-1/3 my-0 mx-auto overflow-y-auto">
                 <div className=" h-16 bg-neutral-700 items-center rounded-lg">
                     <p className="font-mono text-lg font-semibold text-white text-center">WPM: {results.wpm} </p>
@@ -196,8 +201,8 @@ const Home:FC<Props>=({currentUser,token})=>{
                     {innerDisplay}
                 </div>
             </div>
-
         )
+
     }else{
         display=null
     }
@@ -212,7 +217,6 @@ const Home:FC<Props>=({currentUser,token})=>{
         </div>
     )
     return(
-        
         
         <div>
             <div className="h-20 flex  space-x-2 bg-stone-900 text-white w-full w-screen whitespace-normal place-content-around items-center">

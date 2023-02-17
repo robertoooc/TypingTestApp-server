@@ -22,10 +22,6 @@ const App:FC=()=> {
     token ? setCurrentUser(jwt_decode(token)): setCurrentUser(null)
   },[])
 
-  // const logOut = () =>{
-  //   currentUser!= null ? localStorage.removeItem('jwt') : null
-  //   setCurrentUser(null)
-  // }
 
   return (
     <div className='flex flex-row bg-neutral-100 h-screen w-screen h-full w-full overflow-hidden'>
