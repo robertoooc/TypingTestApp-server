@@ -216,6 +216,45 @@ const Home:FC<Props>=({currentUser,token})=>{
             <p className="inline leading-loose tracking-wider">{untypedText}</p>
         </div>
     )
+
+    const keyboard = (
+        <div className="bg-zinc-600 w-8/12 mx-auto">
+            <div className="min-w-max">
+                <span className="border-2 border-black rounded-lg">q</span>
+                <span className="border-2 border-black rounded-lg">w</span>
+                <span className="border-2 border-black rounded-lg">e</span>
+                <span className="border-2 border-black rounded-lg">r</span>
+                <span className="border-2 border-black rounded-lg">t</span>
+                <span className="border-2 border-black rounded-lg">y</span>
+                <span className="border-2 border-black rounded-lg">u</span>
+                <span className="border-2 border-black rounded-lg">i</span>
+                <span className="border-2 border-black rounded-lg">o</span>
+                <span className="border-2 border-black rounded-lg">p</span> 
+            </div>
+
+            <div>
+                <span className="border-2 border-black rounded-lg">a</span>
+                <span className="border-2 border-black rounded-lg">s</span>
+                <span className="border-2 border-black rounded-lg">d</span>
+                <span className="border-2 border-black rounded-lg">f</span>
+                <span className="border-2 border-black rounded-lg">g</span>
+                <span className="border-2 border-black rounded-lg">h</span>
+                <span className="border-2 border-black rounded-lg">j</span>
+                <span className="border-2 border-black rounded-lg">k</span>
+                <span className="border-2 border-black rounded-lg">l</span>
+            </div>
+
+            <div>
+                <span className="border-2 border-black rounded-lg">z</span>
+                <span className="border-2 border-black rounded-lg">x</span>
+                <span className="border-2 border-black rounded-lg">c</span>
+                <span className="border-2 border-black rounded-lg">v</span>
+                <span className="border-2 border-black rounded-lg">b</span>
+                <span className="border-2 border-black rounded-lg">n</span>
+                <span className="border-2 border-black rounded-lg">m</span>
+            </div>
+        </div>
+    )
     return(
         
         <div>
@@ -230,7 +269,10 @@ const Home:FC<Props>=({currentUser,token})=>{
             <div>
                 {displayText}
                 {started == false? <button onClick={()=>setStarted(true)} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>Start</button>:null}
-            {newTest ? <button onClick={handleNewTest} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>New Test</button> :null}
+                {newTest ? <button onClick={handleNewTest} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>New Test</button> :null}
+            </div>
+            <div>
+            {keyboard}
             </div>
             {display}
         </div>
