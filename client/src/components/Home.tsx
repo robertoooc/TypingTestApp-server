@@ -130,11 +130,20 @@ const Home:FC<Props>=({currentUser,token})=>{
                     // taking in the key pressed
                     if(e.key == ' '){
                         setUserKey('space')
+                        document.getElementById('space')?.classList.add('bg-zinc-800')
                     }else{
                         setUserKey(e.key)
+                        document.getElementById(e.key)?.classList.add('bg-zinc-800')
                     }
                 })
-                document.addEventListener('keyup',()=>{
+                document.addEventListener('keyup',(e)=>{
+                    // console.log(e.key)
+                    if(e.key== ' '){
+                        document.getElementById('space')?.classList.remove('bg-zinc-800')
+                    }else{
+
+                        document.getElementById(e.key)?.classList.remove('bg-zinc-800')
+                    }
                     setUserKey(null)
                 } )
         }
@@ -218,41 +227,48 @@ const Home:FC<Props>=({currentUser,token})=>{
     )
 
     const keyboard = (
-        <div className="bg-zinc-600 w-8/12 mx-auto">
-            <div className="min-w-max">
-                <span className="border-2 border-black rounded-lg">q</span>
-                <span className="border-2 border-black rounded-lg">w</span>
-                <span className="border-2 border-black rounded-lg">e</span>
-                <span className="border-2 border-black rounded-lg">r</span>
-                <span className="border-2 border-black rounded-lg">t</span>
-                <span className="border-2 border-black rounded-lg">y</span>
-                <span className="border-2 border-black rounded-lg">u</span>
-                <span className="border-2 border-black rounded-lg">i</span>
-                <span className="border-2 border-black rounded-lg">o</span>
-                <span className="border-2 border-black rounded-lg">p</span> 
-            </div>
+        <div className="w-8/12 min-h-min mx-auto grid grid-col-4 gap-1">
 
-            <div>
-                <span className="border-2 border-black rounded-lg">a</span>
-                <span className="border-2 border-black rounded-lg">s</span>
-                <span className="border-2 border-black rounded-lg">d</span>
-                <span className="border-2 border-black rounded-lg">f</span>
-                <span className="border-2 border-black rounded-lg">g</span>
-                <span className="border-2 border-black rounded-lg">h</span>
-                <span className="border-2 border-black rounded-lg">j</span>
-                <span className="border-2 border-black rounded-lg">k</span>
-                <span className="border-2 border-black rounded-lg">l</span>
-            </div>
+                <div className="grid gap-1 grid-cols-10">
+                    <span className="border-2 border-black rounded-lg text-center" id="q">q</span>
+                    <span className="border-2 border-black rounded-lg text-center"  id="w">w</span>
+                    <span className="border-2 border-black rounded-lg text-center"  id="e">e</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="r">r</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="t">t</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="y">y</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="u">u</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="i">i</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="o">o</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="p">p</span> 
+                </div>
 
-            <div>
-                <span className="border-2 border-black rounded-lg">z</span>
-                <span className="border-2 border-black rounded-lg">x</span>
-                <span className="border-2 border-black rounded-lg">c</span>
-                <span className="border-2 border-black rounded-lg">v</span>
-                <span className="border-2 border-black rounded-lg">b</span>
-                <span className="border-2 border-black rounded-lg">n</span>
-                <span className="border-2 border-black rounded-lg">m</span>
-            </div>
+                <div className="grid gap-1 grid-cols-10">
+                    <span className="border-2 border-black rounded-lg text-center" id="a">a</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="s">s</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="d">d</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="f">f</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="g">g</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="h">h</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="j">j</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="k">k</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="l">l</span>
+                    <span className="border-2 border-black rounded-lg text-center" id=";">;</span>
+                </div>
+
+                <div className="grid gap-1 grid-cols-10">
+                    <span></span>
+                    <span className="border-2 border-black rounded-lg text-center" id="z">z</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="x">x</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="c">c</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="v">v</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="b">b</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="n">n</span>
+                    <span className="border-2 border-black rounded-lg text-center" id="m">m</span>
+                    <span className="border-2 border-black rounded-lg text-center" id=",">,</span>
+                </div>
+                <div className="grid">
+                    <span className="border-2 border-black rounded-lg text-center" id="space">space</span>
+                </div>
         </div>
     )
     return(
@@ -271,9 +287,9 @@ const Home:FC<Props>=({currentUser,token})=>{
                 {started == false? <button onClick={()=>setStarted(true)} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>Start</button>:null}
                 {newTest ? <button onClick={handleNewTest} className='text-white bg-[#24292F] font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center  mx-80'>New Test</button> :null}
             </div>
-            <div>
-            {keyboard}
-            </div>
+            
+            {!newTest? keyboard:null}
+            
             {display}
         </div>
 
