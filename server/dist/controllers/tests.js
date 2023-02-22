@@ -9,56 +9,32 @@ router.get('/:id', middleware, async (req, res) => {
         const foundUser = await User.findById(res.locals.user._id);
         if (!foundUser)
             throw new Error('user not found');
-        // console.log(foundUser)
-        // interface mistakes{
-        //     char: string,
-        //     amount: number,
-        // }
-        // interface tests{
-        //     wpm: number, 
-        //     mistakes: [mistakes],
-        //     _id: string
-        // }
         const testId = req.params.id;
-        // console.log(testId)
-        // console.log(foundUser.tests)
-        const container = [];
-        // interface tests{
-        //     wpm:string,
-        //     _id: string
-        // }
-        // const typeUser:Array<tests> = foundUser.tests
-        // foundUser.tests.forEach((test:any)=>console.log(test?.wpm,'🔥'))
         let index;
         const findTest = foundUser.tests.filter((test, idx) => {
-            console.log(idx);
             if (test._id == req.params.id) {
                 index = idx;
                 return idx;
             }
         });
+        let percentage;
         if (index != 0 && index != undefined) {
-            // console.log(foundUser.tests[index-1],'🔥',foundUser.tests[index])
             const currentTest = foundUser.tests[index];
             const oldTest = foundUser.tests[index - 1];
-            // if(oldTest?.wpm > currentTest.wpm){
-            //     console.log('decrease')
-            // }else if (oldTest?.wpm == currentTest.wpm){
-            //     console.log('neutral')
-            // }else{
-            //     console.log('increase')
-            // }
-            let percentage;
             if (oldTest?.wpm != currentTest.wpm) {
-                percentage = ((currentTest.wpm - oldTest.wpm) / Math.abs(oldTest.wpm)) * 100;
+                percentage = (((currentTest.wpm - oldTest.wpm) / Math.abs(oldTest.wpm)) * 100).toFixed(2);
             }
             else {
                 percentage = 0;
             }
             console.log(percentage);
         }
-        // console.log(typeof(findTest))
-        // console.log(index)
+        else if (index != undefined) {
+            const currentTest = foundUser.tests[index];
+            console.log(currentTest.wpm);
+            percentage = (((currentTest.wpm - 0) / Math.abs(0)) * 100).toFixed(2);
+        }
+        console.log(percentage);
     }
     catch (err) {
         res.status(500).json({ message: 'My bad' });
