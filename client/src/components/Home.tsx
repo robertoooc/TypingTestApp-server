@@ -31,6 +31,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [newTest, setNewTest] = useState<boolean>(false)
     const [seeResults,setSeeResults]=useState<boolean>(false)
     const [suggestionUrl,setSuggestionUrl]=useState<string>('')
+    const [wpm,setWpm]=useState<number>(0)
     let navigate:NavigateFunction = useNavigate()
     let [results,setResults]=useState<any>()
     let {id} = useParams()
@@ -155,6 +156,10 @@ const Home:FC<Props>=({currentUser,token})=>{
             // checking if user typed in correct char
             if(words[index]=== userKey|| (words[index]== ' ' && userKey== 'space')){
                 // if the next index is the same as the current (ex: 'cc' ) the userKey isn't updated so changing the load calls the useEffect because of it's dependency and allows the reset to happen
+                if(userKey=='space'){
+                    let newWpm = wpm +1
+                    setWpm(newWpm)
+                }
                 if(words[index+1]===words[index]){
                     setLoad(false)
                     setLoad(true)
@@ -279,6 +284,7 @@ const Home:FC<Props>=({currentUser,token})=>{
                 <TfiTimer className=" text-xl"/>
                 <p className="font-mono text-xl font-semibold flex">:{time}</p>
                 </span>
+                <p className="font-mono text-xl font-semibold">WPM: {wpm}</p>
                 <p className="font-mono text-xl font-semibold">Tested on: {words[0]}</p>
             </div>
             <br></br>
