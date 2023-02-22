@@ -28,15 +28,16 @@ router.get('/:id',middleware,async(req:Request,res:Response)=>{
             const currentTest:any =foundUser.tests[index]
             const oldTest:any = foundUser.tests[index-1]
             if(oldTest?.wpm != currentTest.wpm){
-                percentage =(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
+                oldTest.wpm == 0 ? percentage=(((currentTest.wpm-0 )/Math.abs(1))*100).toFixed(2): percentage=(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
+                // percentage =(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
             }else{
                 percentage = 0
             }
-            console.log(percentage)
-        }else if (index!= undefined){
+            // console.log(percentage)
+        }else if (index!= undefined && index ==0){
             const currentTest:any =foundUser.tests[index]
-            console.log(currentTest.wpm)
-            percentage =(((currentTest.wpm-0 )/Math.abs(0))*100).toFixed(2)
+            // console.log(currentTest.wpm)
+            percentage =(((currentTest.wpm-0 )/Math.abs(1))*100).toFixed(2)
         }
         console.log(percentage)
 
