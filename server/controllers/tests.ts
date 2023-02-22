@@ -10,21 +10,73 @@ declare var process : {
         JWT_SECRET: string
     }
 } 
-router.post('/', async(req:Request, res: Response)=>{
+router.get('/:id',middleware,async(req:Request,res:Response)=>{
     try{
-        // checking that user making requests is logged in through jwts
-        const authHeader = req.headers.authorization
-        if (!authHeader) throw new Error('JWT token is missing')
-        interface JWTPayload{
-            name: string;
-            email: string;
-            id:string;
-            iat: number
+        const foundUser = await User.findById(res.locals.user._id)
+        if(!foundUser) throw new Error('user not found')
+        // console.log(foundUser)
+        // interface mistakes{
+        //     char: string,
+        //     amount: number,
+        // }
+        // interface tests{
+        //     wpm: number, 
+        //     mistakes: [mistakes],
+        //     _id: string
+        // }
+        const testId:string = req.params.id
+        // console.log(testId)
+        // console.log(foundUser.tests)
+        const container = []
+        // interface tests{
+        //     wpm:string,
+        //     _id: string
+        // }
+
+        // const typeUser:Array<tests> = foundUser.tests
+        // foundUser.tests.forEach((test:any)=>console.log(test?.wpm,'🔥'))
+        let index
+        const findTest = foundUser.tests.filter((test:any, idx:number)=>{
+            // console.log(idx)
+            if(test._id==req.params.id) {
+                index =idx
+                return idx
+            }
+        })
+        if(index!=0 && index!= undefined){
+            // console.log(foundUser.tests[index-1],'🔥',foundUser.tests[index])
+            const currentTest:any =foundUser.tests[index]
+            const oldTest:any = foundUser.tests[index-1]
+
+            // if(oldTest?.wpm > currentTest.wpm){
+            //     console.log('decrease')
+                
+            // }else if (oldTest?.wpm == currentTest.wpm){
+            //     console.log('neutral')
+            // }else{
+            //     console.log('increase')
+            // }
+            let percentage
+            if(oldTest?.wpm != currentTest.wpm){
+                percentage =((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100
+            }else{
+                percentage = 0
+            }
+            console.log(percentage)
         }
-        const decode = await <JWTPayload>jwt.verify(authHeader,process.env.JWT_SECRET)
-        const foundUser = await User.findById(decode.id)
-        if(!foundUser) throw new Error('User not found')
-        res.locals.user = foundUser
+        // console.log(typeof(findTest))
+        // console.log(index)
+
+    }catch(err){
+        res.status(500).json({message:'My bad'})
+    }
+})
+
+
+router.post('/',middleware,async(req:Request, res: Response)=>{
+    try{
+        const foundUser = await User.findById(res.locals.user._id)
+        if(!foundUser) throw new Error('user not found')
         const wpm:number = req.body.wpm
         const mistakes = req.body.mistakes
         const payload={

@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Profile from './components/Profile';
+
 const App:FC=()=> {
   interface user {
   name?: string;
@@ -64,6 +65,7 @@ const App:FC=()=> {
               />
             }
             />
+
 
       </Routes>
     </BrowserRouter>

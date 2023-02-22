@@ -3,6 +3,7 @@ import { useNavigate, NavigateFunction } from "react-router-dom";
 import axios from "axios";
 import {GrUserSettings, GrClose} from 'react-icons/gr'
 import {RiDeleteBin6Line} from 'react-icons/ri'
+import TestAnalytics from './TestAnalytics';
 interface currentUser{
     name?: string;
     email?: string;
@@ -65,6 +66,20 @@ const Profile:FC<Props> = ({currentUser})=>{
                 }
         })
         console.log(changePassword.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
+    const getTestAnalytics = async(id:string)=>{
+        try{
+            const token = localStorage.getItem('jwt')
+            console.log(token)
+            const specifcTest = await axios.get(`http://localhost:8000/tests/${id}`,{   
+                headers: {
+                  'Authorization': `${token}`
+                }
+        })
+        console.log(specifcTest.data)
         }catch(err){
             console.log(err)
         }
@@ -148,6 +163,7 @@ const Profile:FC<Props> = ({currentUser})=>{
     }else{
         viewData = userData?.map((test)=>{
             // console.log(userData[0].time)
+            // console.log(test._id)
             let mistakeMessage, date
             if (test.mistakes.length > 0){
                 let mistake = test.mistakes.reduce((prev,current)=>{
@@ -169,9 +185,8 @@ const Profile:FC<Props> = ({currentUser})=>{
                 </div>
                 )
             } 
-            // console.log(test)
             return(
-            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg'>
+            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>getTestAnalytics(test._id)}>
                 <div className="">
                     <p className="font-sans text-base">{test.wpm}</p>
                 </div>
