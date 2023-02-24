@@ -24,6 +24,7 @@ const Profile:FC<Props> = ({currentUser})=>{
         mistakes: [mistakes];
         _id: string;
         time: string;
+        accuracy:number
     }
     interface accountInfo{
         name: string;
@@ -104,7 +105,7 @@ const Profile:FC<Props> = ({currentUser})=>{
                     wpm: pingBackend.data.wpm
                 }
                 setUserInfo(structureUserInfo)
-
+                console.log(pingBackend.data)
             }catch(err){
                 console.log(err)
             }
@@ -184,6 +185,7 @@ const Profile:FC<Props> = ({currentUser})=>{
                 </div>
                 )
             } 
+            console.log(test.accuracy)
             return(
 
             <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>getTestAnalytics(test._id)}>
@@ -191,6 +193,9 @@ const Profile:FC<Props> = ({currentUser})=>{
                     <p className="font-sans text-base">{test.wpm}</p>
                 </div>
                     {mistakeMessage}    
+                <div>
+                    <p>{`${test.accuracy}%`}</p>
+                </div>
                 <div>
                     {date}
                 </div>
@@ -212,22 +217,28 @@ const Profile:FC<Props> = ({currentUser})=>{
         let displayAnalytics 
         if(!showAnalytics){
             displayAnalytics=(
+                <div>
+                {seeSettings? edit:<div className="flex m-6"><GrUserSettings onClick={()=>setSeeSettings(true)} className='text-xl '/></div>}
                 <div className="h-4/6 w-9/12 mx-auto overflow-y-auto">
                 <div className="flex place-content-around h-16 bg-neutral-700 items-center rounded-lg">
                     <p className="font-mono text-xl font-bold text-white">WPM</p>
                     <p className="font-mono text-xl font-bold text-white">Mistakes</p>
+                    <p className="font-mono text-xl font-bold text-white">Spelling Accuracy</p>
                     <p className="font-mono text-xl font-bold text-white">Date</p>
                 </div>
                 <div className="mt-5 flex flex-col-reverse divide-y divide-y-reverse">
                 {viewData}
                 </div>
             </div>   
+                </div>
             )   
         }else{
             displayAnalytics= (
-                <TestAnalytics
-                    userData={userData}
-                />
+                    <div className="mx-auto">
+                        <TestAnalytics
+                            userData={userData}
+                        />
+                    </div>
             )
         }
 
@@ -236,7 +247,7 @@ const Profile:FC<Props> = ({currentUser})=>{
         <div className="mx-auto">
         {displayUserInfo}
         <button onClick={()=>setShowAnalytics(!showAnalytics)}>Analytics</button>
-        {seeSettings? edit:<div className="flex m-6"><GrUserSettings onClick={()=>setSeeSettings(true)} className='text-xl '/></div>}
+        {/* {seeSettings? edit:<div className="flex m-6"><GrUserSettings onClick={()=>setSeeSettings(true)} className='text-xl '/></div>} */}
         {displayAnalytics}
         </div>
     )

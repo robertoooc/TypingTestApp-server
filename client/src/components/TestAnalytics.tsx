@@ -19,6 +19,7 @@ interface userData{
     mistakes: [mistakes];
     _id: string;
     time: string;
+    accuracy: number;
 }
 interface Props {
     // currentUser: currentUser|null;
@@ -35,21 +36,28 @@ const TestAnalytics:FC<Props> =({userData})=>{
         const [test2Accuracy,setTest2Accuracy]=useState<number>(0)
         const [test1MistakeAmount,setTest1MistakeAmount]=useState<number>(0)
         const [test2MistakeAmount,setTest2MistakeAmount]=useState<number>(0)
+        const [wpmPercentage,setWpmPercentage]=useState<number>(0)
+        const [accuracyPercentage,setAccuracyPercentage]=useState<number>(0)
+        const [mistakePercentage,setMistakePercentage]=useState<number>(0)
+        const [wpmDifference,setWpmDifference]=useState<number>(0)
+        const [accuracyDifference,setAccuracyDifference]=useState<number>(0)
+        const [mistakeDifference,setMistakeDifference]=useState<number>(0)
+
 
         const navigate:NavigateFunction=useNavigate()
 
-        const handleTest1=(wpm:number,mistakeAmount:number)=>{
+        const handleTest1=(wpm:number,mistakeAmount:number,accuracy:number)=>{
             // console.log(wpm)
             setTest1Clicked(true)
             setTest1Wpm(wpm)
-            setTest1Accuracy(4)
+            setTest1Accuracy(accuracy)
             setTest1MistakeAmount(mistakeAmount)
 
         }
-        const handleTest2=(wpm:number,mistakeAmount:number)=>{
+        const handleTest2=(wpm:number,mistakeAmount:number,accuracy:number)=>{
             setTest2Clicked(true)
             setTest2Wpm(wpm)
-            setTest2Accuracy(4)
+            setTest2Accuracy(accuracy)
             setTest2MistakeAmount(mistakeAmount)
         }
         const handleCompare=()=>{
@@ -71,6 +79,10 @@ const TestAnalytics:FC<Props> =({userData})=>{
                 test2MistakeAmount==0 ? mistakeAmountPercentage=parseFloat((((test1MistakeAmount-0 )/Math.abs(1))*100).toFixed(2)):mistakeAmountPercentage=parseFloat((((test1MistakeAmount-test2MistakeAmount )/Math.abs(test2MistakeAmount))*100).toFixed(2))
                 mistakeAmountDifference = test1MistakeAmount-test2MistakeAmount
             }
+            setWpmDifference(wpmDifference)
+            setWpmPercentage(wpmPercentage)
+            setMistakeDifference(mistakeAmountDifference)
+            setMistakePercentage(mistakeAmountPercentage)
             console.log(typeof(mistakeAmountPercentage))
             console.log(mistakeAmountPercentage,mistakeAmountDifference)
         }
@@ -88,7 +100,8 @@ interface test{
     _id: string;
     wpm: number;
     time: string;
-    mistakes: [mistakes]
+    mistakes: [mistakes];
+    accuracy:number
 }
 
 let viewData
@@ -122,11 +135,16 @@ let viewData
                 )
             } 
             return(
-            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>handleTest1(test.wpm,mistakeAmount)}>
+            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>handleTest1(test.wpm,mistakeAmount,test.accuracy)}>
                 <div className="">
                     <p className="font-sans text-base">{test.wpm}</p>
                 </div>
                     {mistakeMessage}    
+                <div>
+                    <p>
+                        {`${test.accuracy}%`}
+                    </p>
+                </div>
                 <div>
                     {date}
                 </div>
@@ -165,11 +183,16 @@ let viewData2
                 )
             } 
             return(
-            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>handleTest2(test.wpm,mistakeAmount)}>
+            <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>handleTest2(test.wpm,mistakeAmount,test.accuracy)}>
                 <div className="">
                     <p className="font-sans text-base">{test.wpm}</p>
                 </div>
                     {mistakeMessage}    
+                <div>
+                    <p>
+                        {`${test.accuracy}%`}
+                    </p>
+                </div>
                 <div>
                     {date}
                 </div>
@@ -178,8 +201,9 @@ let viewData2
     })
 }
     return(
-        <div >
-            <div className="flex space-x-2 mx-auto">
+        <div>
+            <br></br>
+            <div className="flex place-content-center space-x-5">
                 <div className="h-4/6 w-4/12 overflow-y-auto">
                     <div className=" place-content-around h-16 items-center rounded-lg">
                     <div className="flex flex-col-reverse divide-y divide-y-reverse">
@@ -195,90 +219,84 @@ let viewData2
                     </div>
                 </div>
             </div>
-            <div>
-                <div className="flex">
-                <p className="">WPM</p>
-                    <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: test1Wpm},
-                                {x: "test 2", y: test2Wpm},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+
+            <div className="flex place-content-center">
+                <div>
+                    <div className="flex">
+                    <p className="">WPM</p>
+                        <div>
+                            <VictoryChart domainPadding={25} width={200} height={200}>
+                                <VictoryBar
+                                    categories={{ x: ["test 1", "test 2"] }}
+                                    data={[
+                                    {x: "test 1", y: test1Wpm},
+                                    {x: "test 2", y: test2Wpm},
+                                    ]}
+                                    labels={({datum})=> `${datum.y} wpm`}
+                                />
+                            </VictoryChart>
+                        </div>
                     </div>
-                    <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: 100},
-                                {x: "test 2", y: 3},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+                </div>
+                <div>
+                    <div className="flex">
+                    <p className="">Accuracy</p>
+                        <div>
+                            <VictoryChart domainPadding={25} width={200} height={200}>
+                                <VictoryBar
+                                    categories={{ x: ["test 1", "test 2"] }}
+                                    data={[
+                                    {x: "test 1", y: test1Accuracy},
+                                    {x: "test 2", y: test2Accuracy},
+                                    ]}
+                                    labels={({datum})=> `${datum.y}%`}
+                                />
+                            </VictoryChart>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="flex">
+                    <p className="">Mistakes</p>
+                        <div>
+                            <VictoryChart domainPadding={25} width={200} height={200}>
+                                <VictoryBar
+                                    categories={{ x: ["test 1", "test 2"] }}
+                                    data={[
+                                    {x: "test 1", y: test1MistakeAmount},
+                                    {x: "test 2", y: test2MistakeAmount},
+                                    ]}
+                                    labels={({datum})=> `${datum.y}`}
+                                />
+                            </VictoryChart>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <div>
-                <div className="flex">
-                <p className="">Accuracy</p>
+            <div className="flex place-content-evenly">
+                <div>
                     <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: test1Accuracy},
-                                {x: "test 2", y: test2Accuracy},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+                        <p>{wpmDifference}</p>
                     </div>
                     <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: 100},
-                                {x: "test 2", y: 3},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+                        <p>{wpmPercentage}%</p>
                     </div>
                 </div>
-            </div>
-            <div>
-                <div className="flex">
-                <p className="">Mistakes</p>
+                <div>
                     <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: test1MistakeAmount},
-                                {x: "test 2", y: test2MistakeAmount},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+                        <p>{accuracyDifference}</p>
                     </div>
                     <div>
-                        <VictoryChart domainPadding={25} width={200} height={200}>
-                            <VictoryBar
-                                categories={{ x: ["test 1", "test 2"] }}
-                                data={[
-                                {x: "test 1", y: test1MistakeAmount},
-                                {x: "test 2", y: test2MistakeAmount},
-                                ]}
-                                labels={({datum})=> `y:${datum.y}`}
-                            />
-                        </VictoryChart>
+                        <p>{accuracyPercentage}%</p>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>{mistakeDifference}</p>
+                    </div>
+                    <div>
+                        <p>{mistakePercentage}%</p>
                     </div>
                 </div>
             </div>

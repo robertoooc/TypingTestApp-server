@@ -28,7 +28,6 @@ router.get('/:id', middleware, async (req, res) => {
                     oldTest: oldTest,
                     percentage: percentage
                 };
-                // percentage =(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
             }
             else {
                 percentage = 0;
@@ -38,11 +37,9 @@ router.get('/:id', middleware, async (req, res) => {
                     percentage: percentage
                 };
             }
-            // console.log(percentage)
         }
         else if (index != undefined && index == 0) {
             const currentTest = foundUser.tests[index];
-            // console.log(currentTest.wpm)
             percentage = (((currentTest.wpm - 0) / Math.abs(1)) * 100).toFixed(2);
             data = {
                 currentTest: currentTest,
@@ -64,9 +61,11 @@ router.post('/', middleware, async (req, res) => {
             throw new Error('user not found');
         const wpm = req.body.wpm;
         const mistakes = req.body.mistakes;
+        const accuracy = req.body.accuracy;
         const payload = {
             wpm,
-            mistakes
+            mistakes,
+            accuracy
         };
         // adding new test to assigned user
         foundUser.tests.push(payload);

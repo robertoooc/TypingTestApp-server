@@ -8,7 +8,8 @@ const Mistakes = new Schema({
 const Tests = new Schema({
     wpm: { type: Number },
     mistakes: [Mistakes],
-    time: { type: Date, default: Date.now }
+    time: { type: Date, default: Date.now },
+    accuracy: { type: Number }
 }, {
     timestamps: true
 });
