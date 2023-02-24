@@ -17,16 +17,26 @@ router.get('/:id', middleware, async (req, res) => {
                 return idx;
             }
         });
-        let percentage;
+        let percentage, data;
         if (index != 0 && index != undefined) {
             const currentTest = foundUser.tests[index];
             const oldTest = foundUser.tests[index - 1];
             if (oldTest?.wpm != currentTest.wpm) {
                 oldTest.wpm == 0 ? percentage = (((currentTest.wpm - 0) / Math.abs(1)) * 100).toFixed(2) : percentage = (((currentTest.wpm - oldTest.wpm) / Math.abs(oldTest.wpm)) * 100).toFixed(2);
+                data = {
+                    currentTest: currentTest,
+                    oldTest: oldTest,
+                    percentage: percentage
+                };
                 // percentage =(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
             }
             else {
                 percentage = 0;
+                data = {
+                    currentTest: currentTest,
+                    oldTest: oldTest,
+                    percentage: percentage
+                };
             }
             // console.log(percentage)
         }
@@ -34,8 +44,14 @@ router.get('/:id', middleware, async (req, res) => {
             const currentTest = foundUser.tests[index];
             // console.log(currentTest.wpm)
             percentage = (((currentTest.wpm - 0) / Math.abs(1)) * 100).toFixed(2);
+            data = {
+                currentTest: currentTest,
+                oldTest: 'no previous test',
+                percentage: percentage
+            };
         }
         console.log(percentage);
+        res.status(200).json(data);
     }
     catch (err) {
         res.status(500).json({ message: 'My bad' });

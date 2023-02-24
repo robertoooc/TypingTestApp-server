@@ -7,7 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Profile from './components/Profile';
-
+import TestAnalytics from './components/TestAnalytics';
 const App:FC=()=> {
   interface user {
   name?: string;
@@ -65,7 +65,14 @@ const App:FC=()=> {
               />
             }
             />
-
+        {/* <Route
+          path='/test-analytics'
+          element={
+            <TestAnalytics
+              currentUser={currentUser}
+            />
+          }
+        /> */}
 
       </Routes>
     </BrowserRouter>

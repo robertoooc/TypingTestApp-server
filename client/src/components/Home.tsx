@@ -32,6 +32,7 @@ const Home:FC<Props>=({currentUser,token})=>{
     const [seeResults,setSeeResults]=useState<boolean>(false)
     const [suggestionUrl,setSuggestionUrl]=useState<string>('')
     const [wpm,setWpm]=useState<number>(0)
+    // const [accuracy,setAccuracy]= useState<number>(0)
     let navigate:NavigateFunction = useNavigate()
     let [results,setResults]=useState<any>()
     let {id} = useParams()
@@ -65,12 +66,15 @@ const Home:FC<Props>=({currentUser,token})=>{
             }
             setResults(structureResults)
             setSeeResults(true)
-
+            let mistakeAmount=container.map(mistake => mistake.amount).reduce((prev, next) => prev + next)
             if(token){
+                console.log(parseFloat(((index/(index+mistakeAmount))*100).toFixed(2)))
+                const accuracy = parseFloat(((index/(index+mistakeAmount))*100).toFixed(2))
                 const payload={
                     id: currentUser?._id,
                     wpm: findWPM,
-                    mistakes: container
+                    mistakes: container,
+                    accuracy: accuracy
                 }
                 const sendData = await axios.post('http://localhost:8000/tests',payload,{
                     headers: {

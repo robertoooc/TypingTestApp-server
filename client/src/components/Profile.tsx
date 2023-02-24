@@ -35,6 +35,7 @@ const Profile:FC<Props> = ({currentUser})=>{
     const [seeSettings,setSeeSettings] = useState<Boolean>(false)
     const [userData, setUserData] = useState<Array<userData>>()
     const [userInfo,setUserInfo]=useState<accountInfo>()
+    const [showAnalytics,setShowAnalytics]=useState<boolean>(false)
     const navigate:NavigateFunction = useNavigate()
 
     const deleteAccount = async()=>{
@@ -162,9 +163,10 @@ const Profile:FC<Props> = ({currentUser})=>{
         )
     }else{
         viewData = userData?.map((test)=>{
-            // console.log(userData[0].time)
-            // console.log(test._id)
             let mistakeMessage, date
+            date=test.time.slice(0,10)
+            // yyyy-mm-dd
+            date = `${date.substring(5,7)}/${date.substring(8,10)}/${date.substring(0,4)}`
             if (test.mistakes.length > 0){
                 let mistake = test.mistakes.reduce((prev,current)=>{
                     return (prev.amount > current.amount) ? prev :current
@@ -175,9 +177,6 @@ const Profile:FC<Props> = ({currentUser})=>{
                     <p className="font-sans text-base">Amount :  {mistake.amount}</p>
                 </div>
                 )
-                date=test.time.slice(0,10)
-                console.log(date)
-                // console.log(test.time)
             }else{
             mistakeMessage = (
                 <div className="text-center">
@@ -186,6 +185,7 @@ const Profile:FC<Props> = ({currentUser})=>{
                 )
             } 
             return(
+
             <div key={`${test._id}`} className='flex place-content-around items-center my-1 bg-stone-200 rounded-lg' onClick={()=>getTestAnalytics(test._id)}>
                 <div className="">
                     <p className="font-sans text-base">{test.wpm}</p>
@@ -205,20 +205,39 @@ const Profile:FC<Props> = ({currentUser})=>{
         <p className="font-mono text-2xl font-semibold">WPM: {userInfo?.wpm}</p>
         </div>
     )
+
+
+
+
+        let displayAnalytics 
+        if(!showAnalytics){
+            displayAnalytics=(
+                <div className="h-4/6 w-9/12 mx-auto overflow-y-auto">
+                <div className="flex place-content-around h-16 bg-neutral-700 items-center rounded-lg">
+                    <p className="font-mono text-xl font-bold text-white">WPM</p>
+                    <p className="font-mono text-xl font-bold text-white">Mistakes</p>
+                    <p className="font-mono text-xl font-bold text-white">Date</p>
+                </div>
+                <div className="mt-5 flex flex-col-reverse divide-y divide-y-reverse">
+                {viewData}
+                </div>
+            </div>   
+            )   
+        }else{
+            displayAnalytics= (
+                <TestAnalytics
+                    userData={userData}
+                />
+            )
+        }
+
+
     return(
         <div className="mx-auto">
         {displayUserInfo}
+        <button onClick={()=>setShowAnalytics(!showAnalytics)}>Analytics</button>
         {seeSettings? edit:<div className="flex m-6"><GrUserSettings onClick={()=>setSeeSettings(true)} className='text-xl '/></div>}
-        <div className="h-4/6 w-9/12 mx-auto overflow-y-auto">
-            <div className="flex place-content-around h-16 bg-neutral-700 items-center rounded-lg">
-                <p className="font-mono text-xl font-bold text-white">WPM</p>
-                <p className="font-mono text-xl font-bold text-white">Mistakes</p>
-                <p className="font-mono text-xl font-bold text-white">Date</p>
-            </div>
-            <div className="mt-5 flex flex-col-reverse divide-y divide-y-reverse">
-            {viewData}
-            </div>
-        </div>
+        {displayAnalytics}
         </div>
     )
 }

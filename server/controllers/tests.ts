@@ -23,23 +23,36 @@ router.get('/:id',middleware,async(req:Request,res:Response)=>{
                 return idx
             }
         })
-        let percentage
+        let percentage, data
         if(index!=0 && index!= undefined){
             const currentTest:any =foundUser.tests[index]
             const oldTest:any = foundUser.tests[index-1]
             if(oldTest?.wpm != currentTest.wpm){
                 oldTest.wpm == 0 ? percentage=(((currentTest.wpm-0 )/Math.abs(1))*100).toFixed(2): percentage=(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
-                // percentage =(((currentTest.wpm-oldTest.wpm )/Math.abs(oldTest.wpm))*100).toFixed(2)
+                data = {
+                    currentTest: currentTest,
+                    oldTest: oldTest,
+                    percentage: percentage
+                }
             }else{
                 percentage = 0
+                data = {
+                    currentTest: currentTest,
+                    oldTest: oldTest,
+                    percentage: percentage
+                }
             }
-            // console.log(percentage)
         }else if (index!= undefined && index ==0){
             const currentTest:any =foundUser.tests[index]
-            // console.log(currentTest.wpm)
             percentage =(((currentTest.wpm-0 )/Math.abs(1))*100).toFixed(2)
+            data = {
+                currentTest: currentTest,
+                oldTest: 'no previous test',
+                percentage: percentage
+            }
         }
         console.log(percentage)
+        res.status(200).json(data)
 
     }catch(err){
         res.status(500).json({message:'My bad'})
@@ -53,9 +66,11 @@ router.post('/',middleware,async(req:Request, res: Response)=>{
         if(!foundUser) throw new Error('user not found')
         const wpm:number = req.body.wpm
         const mistakes = req.body.mistakes
+        const accuracy = req.body.accuracy
         const payload={
             wpm,
-            mistakes
+            mistakes,
+            accuracy
         }
         // adding new test to assigned user
         foundUser.tests.push(payload)
