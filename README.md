@@ -1,7 +1,11 @@
-# Project-4
-Typing Test App
+# Project-4 | Typing Test App
 ## App Description
 This is typing test app! You can test your typing speed and plan to improve your accuracy and speed. Through creating a profile and taking a few tests you will get more tests suggested based off of areas of improvements you might need. 
+
+## Links
+<a href='https://benevolent-medovik-143b82.netlify.app/' target='_blank'>Typing Test App</a>
+
+<a href='https://github.com/robertoooc/TypingTestApp-server' target='blank'>Frontend Repo</a>
 
 ## TechStack
 * TypeScript
