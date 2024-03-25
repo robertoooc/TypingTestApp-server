@@ -42,7 +42,7 @@ const Tests: Schema= new Schema({
 const UserSchema: Schema = new Schema({
     name:{ type: String, required: true},
     email: { type: String, required: true, unique: true},
-    password: { type: String, required: true},
+    password: { type: String, required: false},
     wpm: { type: Number}, // will come back and try to convert to Float
     tests: [Tests]
 })
