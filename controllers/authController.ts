@@ -1,9 +1,8 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
 import oauth2Client from '../utils/oauth2client.js';
 import User from '../models/User.js';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { genSaltSync, hashSync, compareSync } from 'bcrypt-ts';
 import catchAsync from '../utils/catchAsync.js';
 
@@ -90,7 +89,6 @@ const login = async (req: any, res: any) => {
 
     createSendToken(foundUser, 200, res);
   } catch (err: any) {
-    console.log(err, 'erereojr');
     res.status(500).json({ message: err.message });
   }
 };

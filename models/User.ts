@@ -1,52 +1,27 @@
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
-import mongoose, {model, Schema, Model, Document} from 'mongoose'
-// import Double from 'mongoose'
-// require('@mongoosejs/double')
-
-
-
-interface IMistakes extends Document{
-    char: string,
-    amount: number
+// Define the Test interface directly within the User model file
+interface ITest extends Document {
+  wpm: number;
+  mistakes: Array<{ char: string; amount: number }>;
+  accuracy: number;
 }
-const Mistakes: Schema= new Schema({
-    char: { type: String, lowercase: true },
-    amount: {type: Number}
-},{
-    timestamps: true
-})
 
-interface ITests extends Document{
-    wpm: number,
-    mistakes: Array<object>
-}
-const Tests: Schema= new Schema({
-    wpm: { type: Number},
-    mistakes: [Mistakes],
-    time : { type : Date, default: Date.now },
-    accuracy:{type:Number}
-},{
-    timestamps:true
-})
-
- interface IUser extends Document{
-    name: string,
-    email: string,
-    password: string,
-    average: number,
-    best: number,
-    tests: Array<object>
-
+interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  averageWPM: number;
+  bestWPM: number;
+  tests: Types.ObjectId[];
 }
 
 const UserSchema: Schema = new Schema({
-    name:{ type: String, required: true},
-    email: { type: String, required: true, unique: true},
-    password: { type: String, required: false},
-    wpm: { type: Number}, // will come back and try to convert to Float
-    tests: [Tests]
-})
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: false },
+  wpm: { type: Number, required: true, default: 0 },
+  tests: [{ type: Schema.Types.ObjectId, ref: 'Test' }],
+});
 
-// module.exports = mongoose.model('User', User)
- export default mongoose.model<IUser>('User',UserSchema)
-///module.exports = mongoose.model('User', UserSchema)
+export default mongoose.model<IUser>('User', UserSchema);

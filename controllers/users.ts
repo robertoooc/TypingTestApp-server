@@ -12,14 +12,14 @@ declare var process: {
 //getUserById
 const getUserById = async (req: Request, res: Response) => {
   try {
-    const findUser = await User.findById(res.locals.user._id);
+    const findUser = await User.findById(res.locals.user._id).populate('tests');
     if (findUser) {
       return res.status(200).json(findUser);
     } else {
       return res.status(404).json({ message: ' User not found ' });
     }
-  } catch (err) {
-    res.status(500).json({ message: 'My bad' });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -33,12 +33,12 @@ const deleteUserById = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
     return res.status(200).json({ message: 'user deleted', deleteUser });
-  } catch (err) {
-    res.status(500).json({ message: 'My bad' });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-//updateUserById
+//updateUserById - change password
 const updateUserById = async (req: Request, res: Response) => {
   try {
     const findUser = await User.findById(res.locals.user._id);
@@ -62,7 +62,8 @@ const updateUserById = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
-    if (!updatedUser) return res.status(500).json({ message: 'Error updating' });
+    if (!updatedUser)
+      return res.status(500).json({ message: 'Error updating' });
 
     const jwtPayload: { name: string; email: string; id: string } = {
       name: updatedUser.name,

@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 //getUserById
 const getUserById = async (req, res) => {
     try {
-        const findUser = await User.findById(res.locals.user._id);
+        const findUser = await User.findById(res.locals.user._id).populate('tests');
+        console.log(findUser);
         if (findUser) {
             return res.status(200).json(findUser);
         }
@@ -13,7 +14,7 @@ const getUserById = async (req, res) => {
         }
     }
     catch (err) {
-        res.status(500).json({ message: 'My bad' });
+        res.status(500).json({ message: err.message });
     }
 };
 //deleteUserById
@@ -28,7 +29,7 @@ const deleteUserById = async (req, res) => {
         return res.status(200).json({ message: 'user deleted', deleteUser });
     }
     catch (err) {
-        res.status(500).json({ message: 'My bad' });
+        res.status(500).json({ message: err.message });
     }
 };
 //updateUserById
