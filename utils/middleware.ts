@@ -15,6 +15,8 @@ const middleware = (app: Express) => {
       req.originalUrl === '/auth/login' ||
       req.originalUrl === '/auth/register' ||
       req.originalUrl === '/auth/google' ||
+      req.originalUrl === '/password/reset' ||
+      req.originalUrl === '/password/forgotpassword' ||
       req.originalUrl === '/tests/all'
     ) {
       next();
@@ -35,12 +37,13 @@ const middleware = (app: Express) => {
         process.env.JWT_SECRET
       ) as JWTPayload;
       const foundUser = await User.findOne({ _id: decode.id });
+
       res.locals.user = foundUser;
 
       next();
     } catch (err) {
       res.locals.user = null;
-      next();
+      res.status(401).json({ message: 'Not authorized' });
     }
   });
 };

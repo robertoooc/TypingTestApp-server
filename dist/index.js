@@ -5,7 +5,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import cors from 'cors';
 import router from './routes/routes.js';
 import middleware from './utils/middleware.js';
-import rateLimit from 'express-rate-limit';
+import { standardLimiter } from './utils/rateLimiters.js';
 dotenv.config();
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -17,16 +17,7 @@ app.use((req, res, next) => {
     app.use(mongoSanitize()); // removes $ and . to avoid noSQL injections
     next();
 });
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-// const validateInput = [
-//   body('email').isEmail().normalizeEmail(),
-//   body('password').isLength({ min: 6 }),
-// ];
-// app.use(validateInput);
+app.use(standardLimiter);
 middleware(app);
 router(app);
 app.get('/', (req, res) => {

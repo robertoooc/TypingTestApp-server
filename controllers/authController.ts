@@ -68,6 +68,7 @@ const googleAuth = catchAsync(async (req: any, res: any, next: any) => {
         name,
         email,
         wpm: 0,
+        googleOAuth: true,
       });
     }
     createSendToken(user, 201, res);

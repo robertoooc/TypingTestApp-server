@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 interface IMistake extends Document {
   char: string;
@@ -9,6 +9,8 @@ interface ITest extends Document {
   wpm: number;
   mistakes: IMistake[];
   accuracy: number;
+  time: Date;
+  user?: Types.ObjectId;
 }
 
 const MistakeSchema: Schema = new Schema({
@@ -29,3 +31,4 @@ const TestSchema: Schema = new Schema({
 });
 
 export default mongoose.model<ITest>('Test', TestSchema);
+export { ITest, IMistake };

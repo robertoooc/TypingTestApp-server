@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 const getUserById = async (req, res) => {
     try {
         const findUser = await User.findById(res.locals.user._id).populate('tests');
-        console.log(findUser);
         if (findUser) {
             return res.status(200).json(findUser);
         }
@@ -32,7 +31,7 @@ const deleteUserById = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-//updateUserById
+//updateUserById - change password
 const updateUserById = async (req, res) => {
     try {
         const findUser = await User.findById(res.locals.user._id);
