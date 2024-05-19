@@ -11,14 +11,15 @@ declare var process: {
 
 const middleware = (app: Express) => {
   app.all('*', async (req: Request, res: Response, next: NextFunction) => {
-    if (
-      req.originalUrl === '/auth/login' ||
-      req.originalUrl === '/auth/register' ||
-      req.originalUrl === '/auth/google' ||
-      req.originalUrl === '/password/reset' ||
-      req.originalUrl === '/password/forgotpassword' ||
-      req.originalUrl === '/tests/all'
-    ) {
+    const publicRoutes = [
+      '/auth/login',
+      '/auth/register',
+      '/auth/google',
+      '/password/reset',
+      '/password/forgotpassword',
+      '/tests/all',
+    ];
+    if (publicRoutes.includes(req.path)) {
       next();
       return;
     }
@@ -42,6 +43,7 @@ const middleware = (app: Express) => {
 
       next();
     } catch (err) {
+      console.log(err, 'error in middleware', req.originalUrl, req.path);
       res.locals.user = null;
       res.status(401).json({ message: 'Not authorized' });
     }
