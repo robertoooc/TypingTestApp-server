@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ResetToken {
+  id         String   @id @default(uuid())
+  token      String   @unique
+  email      String   @unique
+  expiration DateTime
+
+  @@index([token], name: "idx_reset_token_token")
+}
+
+model User {
+  id                 String             @id @default(uuid())
+  name               String
+  email              String?            @unique
+  password           String?
+  profilePic         String?
+  bio                String?
+  wpm                Int                @default(0)
+  googleOAuth        Boolean            @default(false)
+  guest              Boolean            @default(false)
+  tests              Test[]
+  lessonProgress     LessonProgress[]
+  progress           UserProgress?
+  leaderboardEntries LeaderboardEntry[]
+  createdAt          DateTime           @default(now())
+
+  @@index([name], name: "idx_user_name")
+}
+
+model UserProgress {
+  id                     String @id @default(uuid())
+  userId                 String @unique
+  user                   User   @relation(fields: [userId], references: [id])
+  totalTests             Int    @default(0)
+  averageWPM             Float  @default(0)
+  WPM                    Int    @default(0)
+  topWPMInterval         Int    @default(0)
+  averageAccuracy        Float  @default(0)
+  topAccuracy            Float  @default(0)
+  averageCharactersTyped Float  @default(0)
+  totalCharactersTyped   Int    @default(0)
+  totalWordsTyped        Int    @default(0)
+  totalMistakes          Int    @default(0)
+  totalDuration          Int    @default(0)
+
+  @@index([userId], name: "idx_user_progress_user_id")
+}
+
+model Lesson {
+  id             String           @id @default(uuid())
+  title          String
+  description    String
+  words          LessonWord[]
+  emphasis       LessonEmphasis[]
+  LessonProgress LessonProgress[]
+  TestLesson     TestLesson[]
+}
+
+model LessonProgress {
+  id                String @id @default(uuid())
+  userId            String
+  user              User   @relation(fields: [userId], references: [id])
+  lessonId          String
+  lesson            Lesson @relation(fields: [lessonId], references: [id])
+  totalTests        Int    @default(0)
+  timeSpent         Int    @default(0)
+  averageWPM        Float  @default(0)
+  highestWPM        Int    @default(0)
+  totalWordsTyped   Int    @default(0)
+  averageAccuracy   Float  @default(0)
+  highestAccuracy   Float  @default(0)
+  totalCharsTyped   Int    @default(0)
+  averageCharsTyped Float  @default(0)
+  highestCharsTyped Int    @default(0)
+  totalMistakes     Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, lessonId], name: "unique_user_lesson")
+  @@index([userId], name: "idx_lesson_progress_user_id")
+  @@index([averageWPM], name: "idx_lesson_progress_average_wpm")
+  @@index([highestWPM], name: "idx_lesson_progress_highest_wpm")
+  @@index([averageAccuracy], name: "idx_lesson_progress_average_accuracy")
+  @@index([highestAccuracy], name: "idx_lesson_progress_highest_accuracy")
+}
+
+model LeaderboardEntry {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  wpm            Int
+  topWPMInterval Int
+  topAccuracy    Float
+  accuracy       Float
+  totalChars     Int
+  mistakesAmt    Int
+  testId         String   @unique
+  test           Test     @relation(fields: [testId], references: [id])
+  createdAt      DateTime @default(now())
+
+  @@index([userId], name: "idx_leaderboard_entry_user_id")
+}
+
+model Test {
+  id                         String             @id @default(uuid())
+  wpm                        Int
+  totalChars                 Int
+  mistakes                   Mistake[]
+  accuracy                   Float
+  text                       String
+  duration                   Int
+  userId                     String
+  user                       User               @relation(fields: [userId], references: [id])
+  intervalData               IntervalWordData[]
+  topWPMInterval             Int
+  topAccuracyInterval        Float
+  topCharactersTypedInterval Int
+  leaderboardEntries         LeaderboardEntry?
+  createdAt                  DateTime           @default(now())
+  word                       Word?              @relation(fields: [wordId], references: [id])
+  wordId                     String?
+  lessons                    TestLesson[]
+
+  @@index([userId], name: "idx_test_user_id")
+}
+
+model Mistake {
+  id           String @id @default(uuid())
+  expectedChar String
+  typedChar    String
+  idx          Int
+  test         Test   @relation(fields: [testId], references: [id])
+  testId       String
+}
+
+model IntervalWordData {
+  id              String @id @default(uuid())
+  timeFrame       Int
+  wordsTyped      Int
+  charactersTyped Int
+  mistakes        Int
+  accuracy        Float
+  testId          String
+  test            Test   @relation(fields: [testId], references: [id])
+}
+
+model Word {
+  id         String         @id @default(uuid())
+  text       String         @unique
+  tests      Test[]
+  LessonWord LessonWord[]
+  emphases   WordEmphasis[]
+}
+
+model LessonWord {
+  id       String @id @default(uuid())
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+  lessonId String
+  word     Word   @relation(fields: [wordId], references: [id])
+  wordId   String
+}
+
+model Emphasis {
+  id      String           @id @default(uuid())
+  key     String           @unique
+  lessons LessonEmphasis[]
+  words   WordEmphasis[]
+}
+
+model LessonEmphasis {
+  id         String   @id @default(uuid())
+  lesson     Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId   String
+  emphasis   Emphasis @relation(fields: [emphasisId], references: [id])
+  emphasisId String
+}
+
+model WordEmphasis {
+  id         String   @id @default(uuid())
+  word       Word     @relation(fields: [wordId], references: [id])
+  wordId     String
+  emphasis   Emphasis @relation(fields: [emphasisId], references: [id])
+  emphasisId String
+}
+
+model TestLesson {
+  id        String   @id @default(uuid())
+  testId    String
+  test      Test     @relation(fields: [testId], references: [id])
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([testId, lessonId], name: "unique_test_lesson")
+}
