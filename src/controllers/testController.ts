@@ -209,7 +209,8 @@ const updateOrInitializeProgress = async (
     }
 
     // Calculate improvements only for client-side display not for database
-    const improvementDetails = {
+    return {
+      ...updatedProgress,
       totalTests: {
         improvement: existingProgress ? existingProgress.totalTests < updatedProgress.totalTests : true,
         value: updatedProgress.totalTests,
@@ -266,8 +267,6 @@ const updateOrInitializeProgress = async (
         prevValue: existingProgress?.topAccuracy || 0,
       },
     };
-
-    return { updatedProgress, improvements: improvementDetails };
   } catch (err) {
     console.error('Error updating user progress:', err);
     throw new Error('Failed to update user progress');
