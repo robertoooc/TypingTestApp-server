@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "heroku-prebuild": "npm install",
     "start": "ts-node-dev --poll ./src/index.ts",
     "build": "rimraf ./dist && tsc",
     "dev": "npm run build && node dist/index.js"
